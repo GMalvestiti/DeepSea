@@ -6,6 +6,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.BiomeTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.biome.Biome;
+import net.riser876.deepsea.config.Config;
 import net.riser876.deepsea.registry.TagRegistry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -20,10 +21,7 @@ import java.util.Map;
 public abstract class BoatEntityMixin {
 
     @Unique
-    private static final Map<RegistryKey<Biome>, Boolean> OCEAN_BIOME_CACHE = new HashMap<>();
-
-    @Unique
-    private static final int DEEP_SEA_TICK_INTERVAL = 100;
+    private static final Map<RegistryKey<Biome>, Boolean> DEEP_SEA_OCEAN_BIOME_CACHE = new HashMap<>();
 
     @Unique
     private int deepSeaTickCounter = 0;
@@ -33,7 +31,7 @@ public abstract class BoatEntityMixin {
         at = @At("HEAD")
     )
     private void onDeepSeaTick(CallbackInfo ci) {
-        if (deepSeaTickCounter++ != DEEP_SEA_TICK_INTERVAL) {
+        if (deepSeaTickCounter++ != Config.DEEP_SEA_TICK_INTERVAL) {
             return;
         }
 
@@ -56,7 +54,7 @@ public abstract class BoatEntityMixin {
             RegistryKey<Biome> biomeKey = biomeEntry.getKey().orElse(null);
 
             if (biomeKey != null) {
-                boolean isOcean = OCEAN_BIOME_CACHE.computeIfAbsent(biomeKey, key ->
+                boolean isOcean = DEEP_SEA_OCEAN_BIOME_CACHE.computeIfAbsent(biomeKey, key ->
                         biomeEntry.isIn(BiomeTags.IS_OCEAN) || biomeEntry.isIn(BiomeTags.IS_DEEP_OCEAN)
                 );
 
