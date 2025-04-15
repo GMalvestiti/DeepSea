@@ -55,7 +55,7 @@ public abstract class BoatEntityMixin {
 
             if (biomeKey != null) {
                 boolean isOcean = DEEP_SEA_OCEAN_BIOME_CACHE.computeIfAbsent(biomeKey, key ->
-                        biomeEntry.isIn(BiomeTags.IS_OCEAN) || biomeEntry.isIn(BiomeTags.IS_DEEP_OCEAN)
+                        biomeEntry.isIn(BiomeTags.IS_OCEAN)
                 );
 
                 if (isOcean) {
