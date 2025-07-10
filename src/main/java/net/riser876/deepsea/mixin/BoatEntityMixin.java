@@ -16,24 +16,27 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Mixin(BoatEntity.class)
 public class BoatEntityMixin {
 
     @Unique
-    private static final Map<RegistryKey<Biome>, Boolean> DEEP_SEA_OCEAN_BIOME_CACHE = new HashMap<>();
+    private static final Map<RegistryKey<Biome>, Boolean> DEEP_SEA_OCEAN_BIOME_CACHE = new ConcurrentHashMap<>();
 
     @Unique
     private int deepSeaTickCounter = 0;
+
+    @Unique
+    private boolean deepSeaCheckInProgress = false;
 
     @Inject(
         method = "tick",
         at = @At("HEAD")
     )
     private void onDeepSeaTick(CallbackInfo ci) {
-        if (deepSeaTickCounter++ != Config.DEEP_SEA_TICK_INTERVAL) {
+        if (deepSeaCheckInProgress || deepSeaTickCounter++ != Config.DEEP_SEA_TICK_INTERVAL) {
             return;
         }
 
@@ -44,28 +47,30 @@ public class BoatEntityMixin {
             return;
         }
 
+        deepSeaCheckInProgress = true;
+        deepSeaTickCounter = 0;
+
         ServerWorld world = (ServerWorld) boat.getWorld();
 
         world.getServer().execute(() -> {
-            if (boat.isRemoved() || !boat.getType().isIn(TagRegistry.DEEP_SEA_BOAT)) {
-                deepSeaTickCounter = 0;
-                return;
-            }
+            try {
+                if (boat.isRemoved() || !boat.getType().isIn(TagRegistry.DEEP_SEA_BOAT)) return;
 
-            RegistryEntry<Biome> biomeEntry = world.getBiome(boat.getBlockPos());
-            RegistryKey<Biome> biomeKey = biomeEntry.getKey().orElse(null);
+                RegistryEntry<Biome> biomeEntry = world.getBiome(boat.getBlockPos());
+                RegistryKey<Biome> biomeKey = biomeEntry.getKey().orElse(null);
 
-            if (biomeKey != null) {
-                boolean isOcean = DEEP_SEA_OCEAN_BIOME_CACHE.computeIfAbsent(biomeKey, key ->
-                    biomeEntry.isIn(BiomeTags.IS_OCEAN)
-                );
+                if (biomeKey != null) {
+                    boolean isOcean = DEEP_SEA_OCEAN_BIOME_CACHE.computeIfAbsent(biomeKey, key ->
+                            biomeEntry.isIn(BiomeTags.IS_OCEAN)
+                    );
 
-                if (isOcean) {
-                    boat.damage(boat.getDamageSources().generic(), 100.0F);
+                    if (isOcean) {
+                        boat.damage(boat.getDamageSources().generic(), 100.0F);
+                    }
                 }
+            } finally {
+                deepSeaCheckInProgress = false;
             }
-
-            deepSeaTickCounter = 0;
         });
     }
 }
