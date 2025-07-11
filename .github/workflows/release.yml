@@ -44,6 +44,6 @@ jobs:
           draft: true
           prerelease: false
           files: |
-            build/libs/CastAway-${{ inputs.version_release }}.jar
+            build/libs/DeepSea-${{ inputs.version_release }}.jar
             LICENSE.txt
           fail_on_unmatched_files: true
