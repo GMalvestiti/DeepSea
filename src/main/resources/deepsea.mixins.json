@@ -4,7 +4,7 @@
   "package": "net.riser876.deepsea.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "BoatEntityMixin"
+    "AbstractBoatEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

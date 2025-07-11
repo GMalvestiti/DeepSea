@@ -1,7 +1,6 @@
 package net.riser876.deepsea.mixin;
 
-import net.minecraft.entity.vehicle.BoatEntity;
-
+import net.minecraft.entity.vehicle.AbstractBoatEntity;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.BiomeTags;
@@ -19,8 +18,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Mixin(BoatEntity.class)
-public class BoatEntityMixin {
+@Mixin(AbstractBoatEntity.class)
+public class AbstractBoatEntityMixin {
 
     @Unique
     private static final Map<RegistryKey<Biome>, Boolean> DEEP_SEA_OCEAN_BIOME_CACHE = new ConcurrentHashMap<>();
@@ -40,7 +39,7 @@ public class BoatEntityMixin {
             return;
         }
 
-        BoatEntity boat = (BoatEntity)(Object)this;
+        AbstractBoatEntity boat = (AbstractBoatEntity)(Object)this;
 
         if (boat.getWorld().isClient() || boat.getPassengerList().isEmpty() || !boat.isTouchingWater()) {
             deepSeaTickCounter = 0;
@@ -65,7 +64,7 @@ public class BoatEntityMixin {
                     );
 
                     if (isOcean) {
-                        boat.damage(boat.getDamageSources().generic(), 100.0F);
+                        boat.damage(world, boat.getDamageSources().generic(), 100.0F);
                     }
                 }
             } finally {
