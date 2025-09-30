@@ -45,7 +45,7 @@ Default for 1.21.1:
 
 ```json
 {
-    "enabled": true,
-    "tick_interval": 100
+  "enabled": true,
+  "tick_interval": 100
 }
 ```
