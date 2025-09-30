@@ -16,7 +16,12 @@
   "icon": "assets/deepsea/icon.png",
   "environment": "*",
   "entrypoints": {
-    "main": ["net.riser876.deepsea.DeepSea"]
+    "main": [
+      "net.riser876.deepsea.DeepSea"
+    ],
+    "fabric-datagen": [
+      "net.riser876.deepsea.datagen.DeepSeaDataGenerator"
+    ]
   },
   "mixins": [
     "deepsea.mixins.json"
@@ -24,6 +29,6 @@
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
-    "minecraft": "${minecraft_version}"
+    "minecraft": "~${minecraft_version}"
   }
 }

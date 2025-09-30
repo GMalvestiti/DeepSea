@@ -5,6 +5,6 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
-public class TagRegistry {
+public class DeepSeaTag {
     public static final TagKey<EntityType<?>> DEEP_SEA_BOAT = TagKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of("deepsea", "boat"));
 }
