@@ -6,9 +6,9 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.BiomeTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.biome.Biome;
-import net.riser876.deepsea.config.Config;
-import net.riser876.deepsea.registry.TagRegistry;
+import net.riser876.deepsea.registry.DeepSeaTag;
 
+import net.riser876.deepsea.util.DeepSeaGlobal;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,6 +17,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static net.riser876.deepsea.config.ConfigManager.CONFIG;
 
 @Mixin(AbstractBoatEntity.class)
 public class AbstractBoatEntityMixin {
@@ -35,7 +37,7 @@ public class AbstractBoatEntityMixin {
         at = @At("HEAD")
     )
     private void onDeepSeaTick(CallbackInfo ci) {
-        if (deepSeaCheckInProgress || deepSeaTickCounter++ != Config.DEEP_SEA_TICK_INTERVAL) {
+        if (deepSeaCheckInProgress || deepSeaTickCounter++ != CONFIG.DEEP_SEA_TICK_INTERVAL) {
             return;
         }
 
@@ -53,7 +55,7 @@ public class AbstractBoatEntityMixin {
 
         world.getServer().execute(() -> {
             try {
-                if (boat.isRemoved() || !boat.getType().isIn(TagRegistry.DEEP_SEA_BOAT)) return;
+                if (boat.isRemoved() || !boat.getType().isIn(DeepSeaTag.DEEP_SEA_BOAT)) return;
 
                 RegistryEntry<Biome> biomeEntry = world.getBiome(boat.getBlockPos());
                 RegistryKey<Biome> biomeKey = biomeEntry.getKey().orElse(null);

@@ -6,6 +6,7 @@
   "mixins": [
     "AbstractBoatEntityMixin"
   ],
+  "plugin": "net.riser876.deepsea.mixin.DeepSeaMixinPlugin",
   "injectors": {
     "defaultRequire": 1
   }
