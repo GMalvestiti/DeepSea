@@ -16,7 +16,7 @@ public class DeepSeaTagProvider extends FabricTagProvider.EntityTypeTagProvider 
 
     @Override
     protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
-        getOrCreateTagBuilder(DeepSeaTag.DEEP_SEA_BOAT)
+        valueLookupBuilder(DeepSeaTag.DEEP_SEA_BOAT)
                 .addOptionalTag(ConventionalEntityTypeTags.BOATS)
                 .setReplace(false);
     }

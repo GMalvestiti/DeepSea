@@ -42,7 +42,7 @@ public class AbstractBoatEntityMixin {
 
         AbstractBoatEntity boat = (AbstractBoatEntity)(Object)this;
 
-        if (boat.getWorld().isClient() || boat.getPassengerList().isEmpty() || !boat.isTouchingWater()) {
+        if (boat.getEntityWorld().isClient() || boat.getPassengerList().isEmpty() || !boat.isTouchingWater()) {
             deepSeaTickCounter = 0;
             return;
         }
@@ -50,7 +50,7 @@ public class AbstractBoatEntityMixin {
         deepSeaCheckInProgress = true;
         deepSeaTickCounter = 0;
 
-        ServerWorld world = (ServerWorld) boat.getWorld();
+        ServerWorld world = (ServerWorld) boat.getEntityWorld();
 
         world.getServer().execute(() -> {
             try {
