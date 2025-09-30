@@ -27,17 +27,25 @@ Default for 1.21.1:
 ```json
 {
   "values": [
-    "minecraft:boat",
-    "minecraft:chest_boat"
+    "#c:boats"
   ]
 }
 ```
 
-Default for 1.21.2 and above:
+## Documentation
+
+- **enabled**:<br>
+  Enables or disables the mod.<br>
+  Type: `boolean` Default: `true`
+- **tick_interval**:<br>
+  The interval in ticks between checks for boats.<br>
+  Type: `integer` Default: `100`
+
+## Full Configuration Example:
+
 ```json
 {
-  "values": [
-    "#c:boats"
-  ]
+    "enabled": true,
+    "tick_interval": 100
 }
 ```
