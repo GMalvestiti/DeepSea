@@ -7,7 +7,7 @@
 - **Required:** [Fabric API](https://modrinth.com/mod/fabric-api)
 - **Made to work with:** [Small Ships](https://modrinth.com/mod/small-ships)
 
-> By default, only `#c:boats` are included in the `deepsea:boat` tag.
+> By default, only `#c:boats` is included in the `deepsea:boat` tag.
 
 ## Installation
 
