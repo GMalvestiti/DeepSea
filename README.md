@@ -7,7 +7,7 @@
 - **Required:** [Fabric API](https://modrinth.com/mod/fabric-api)
 - **Made to work with:** [Small Ships](https://modrinth.com/mod/small-ships)
 
-> By default, only `minecraft:boat` and `minecraft:chest_boat` are included in the `deepsea:boat` tag prior to 1.21.2. In versions 1.21.2 and above, only `#c:boats` is included.
+> By default, only `#c:boats` are included in the `deepsea:boat` tag.
 
 ## Installation
 
@@ -21,8 +21,6 @@
 To include/remove boats just create a datapack for the tag file:
 
 **`data/deepsea/tags/entity_type/boat.json`**
-
-Default for 1.21.1:
 
 ```json
 {
