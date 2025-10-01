@@ -65,7 +65,7 @@ public class BoatEntityMixin {
                     );
 
                     if (isOcean) {
-                        boat.damage(boat.getDamageSources().generic(), 100.0F);
+                        boat.damage(boat.getDamageSources().generic(), CONFIG.DEEP_SEA_BOAT_DAMAGE);
                     }
                 }
             } finally {

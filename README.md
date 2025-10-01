@@ -38,6 +38,9 @@ To include/remove boats just create a datapack for the tag file:
 - **tick_interval**:<br>
   The interval in ticks between checks for boats.<br>
   Type: `integer` Default: `100`
+- **boat_damage**:<br>
+  The damage amount applied to boats in ocean biomes.<br>
+  Type: `float` Default: `100.0`
 
 ## Full Configuration Example:
 
