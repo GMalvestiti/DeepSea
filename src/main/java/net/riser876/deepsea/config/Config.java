@@ -12,4 +12,8 @@ public class Config {
     @Expose
     @SerializedName("tick_interval")
     public int DEEP_SEA_TICK_INTERVAL = ConfigDefaultValues.DEEP_SEA_TICK_INTERVAL;
+
+    @Expose
+    @SerializedName("boat_damage")
+    public float DEEP_SEA_BOAT_DAMAGE = ConfigDefaultValues.DEEP_SEA_BOAT_DAMAGE;
 }
