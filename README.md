@@ -47,6 +47,7 @@ To include/remove boats just create a datapack for the tag file:
 ```json
 {
   "enabled": true,
-  "tick_interval": 100
+  "tick_interval": 100,
+  "boat_damage": 100.0
 }
 ```
