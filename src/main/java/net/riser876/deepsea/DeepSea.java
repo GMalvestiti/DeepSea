@@ -1,7 +1,7 @@
 package net.riser876.deepsea;
 
 import net.fabricmc.api.ModInitializer;
-import net.riser876.deepsea.util.DeepSeaGlobal;
+import net.riser876.deepsea.util.DeepSeaGlobals;
 
 import java.util.Objects;
 
@@ -12,9 +12,9 @@ public class DeepSea implements ModInitializer {
     @Override
     public void onInitialize() {
         if (Objects.nonNull(CONFIG) && CONFIG.ENABLED) {
-            DeepSeaGlobal.LOGGER.info("[DeepSea] Mod loaded.");
+            DeepSeaGlobals.LOGGER.info("[DeepSea] Mod loaded.");
         } else {
-            DeepSeaGlobal.LOGGER.info("[DeepSea] Mod disabled.");
+            DeepSeaGlobals.LOGGER.info("[DeepSea] Mod disabled.");
         }
     }
 }
