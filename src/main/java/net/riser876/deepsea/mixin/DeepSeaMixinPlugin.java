@@ -25,7 +25,10 @@ public class DeepSeaMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        return CONFIG.ENABLED && mixinClassName.startsWith("net.riser876.deepsea");
+        if (mixinClassName.contains("net.riser876.deepsea")) {
+            return CONFIG.ENABLED;
+        }
+        return true;
     }
 
     @Override
