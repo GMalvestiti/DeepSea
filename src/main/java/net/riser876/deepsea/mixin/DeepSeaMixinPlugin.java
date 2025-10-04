@@ -1,7 +1,7 @@
 package net.riser876.deepsea.mixin;
 
 import net.riser876.deepsea.config.ConfigManager;
-import net.riser876.deepsea.util.DeepSeaGlobal;
+import net.riser876.deepsea.util.DeepSeaGlobals;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -17,9 +17,9 @@ public class DeepSeaMixinPlugin implements IMixinConfigPlugin {
     public void onLoad(String mixinPackage) {
         try {
             ConfigManager.loadConfig();
-            DeepSeaGlobal.LOGGER.info("[DeepSea] Configuration loaded.");
+            DeepSeaGlobals.LOGGER.info("[DeepSea] Configuration loaded.");
         } catch (Exception e) {
-            DeepSeaGlobal.LOGGER.error("[DeepSea] Failed to load configuration. Check your deepsea.json config file.", e);
+            DeepSeaGlobals.LOGGER.error("[DeepSea] Failed to load configuration. Check your deepsea.json config file.", e);
         }
     }
 
