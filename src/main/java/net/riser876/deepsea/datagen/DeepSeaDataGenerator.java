@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.riser876.deepsea.datagen.provider.DeepSeaEnglishLanguageProvider;
 import net.riser876.deepsea.datagen.provider.DeepSeaTagProvider;
-import net.riser876.deepsea.util.DeepSeaGlobal;
+import net.riser876.deepsea.util.DeepSeaGlobals;
 
 public class DeepSeaDataGenerator implements DataGeneratorEntrypoint {
 
@@ -17,6 +17,6 @@ public class DeepSeaDataGenerator implements DataGeneratorEntrypoint {
 
     @Override
     public String getEffectiveModId() {
-        return DeepSeaGlobal.MOD_ID;
+        return DeepSeaGlobals.MOD_ID;
     }
 }
