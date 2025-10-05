@@ -6,7 +6,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.BiomeTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.biome.Biome;
-import net.riser876.deepsea.registry.DeepSeaTag;
+import net.riser876.deepsea.registry.DeepSeaTags;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -54,7 +54,7 @@ public class AbstractBoatEntityMixin {
 
         world.getServer().execute(() -> {
             try {
-                if (boat.isRemoved() || !boat.getType().isIn(DeepSeaTag.DEEP_SEA_BOAT)) return;
+                if (boat.isRemoved() || !boat.getType().isIn(DeepSeaTags.DEEP_SEA_BOAT)) return;
 
                 RegistryEntry<Biome> biomeEntry = world.getBiome(boat.getBlockPos());
                 RegistryKey<Biome> biomeKey = biomeEntry.getKey().orElse(null);

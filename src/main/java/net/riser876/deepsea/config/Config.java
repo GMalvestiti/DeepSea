@@ -7,13 +7,13 @@ public class Config {
 
     @Expose
     @SerializedName("enabled")
-    public boolean ENABLED = ConfigDefaultValues.ENABLED;
+    public boolean ENABLED = true;
 
     @Expose
     @SerializedName("tick_interval")
-    public int DEEP_SEA_TICK_INTERVAL = ConfigDefaultValues.DEEP_SEA_TICK_INTERVAL;
+    public int DEEP_SEA_TICK_INTERVAL = 100;
 
     @Expose
     @SerializedName("boat_damage")
-    public float DEEP_SEA_BOAT_DAMAGE = ConfigDefaultValues.DEEP_SEA_BOAT_DAMAGE;
+    public float DEEP_SEA_BOAT_DAMAGE = 100.0F;
 }
