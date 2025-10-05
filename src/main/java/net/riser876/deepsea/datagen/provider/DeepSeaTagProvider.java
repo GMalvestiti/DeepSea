@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEntityTypeTags;
 import net.minecraft.registry.RegistryWrapper;
-import net.riser876.deepsea.registry.DeepSeaTag;
+import net.riser876.deepsea.registry.DeepSeaTags;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -16,7 +16,7 @@ public class DeepSeaTagProvider extends FabricTagProvider.EntityTypeTagProvider 
 
     @Override
     protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
-        getOrCreateTagBuilder(DeepSeaTag.DEEP_SEA_BOAT)
+        getOrCreateTagBuilder(DeepSeaTags.DEEP_SEA_BOAT)
                 .addOptionalTag(ConventionalEntityTypeTags.BOATS)
                 .setReplace(false);
     }
