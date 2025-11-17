@@ -42,7 +42,7 @@ To include/remove boats just create a datapack for the tag file:
   The damage amount applied to boats in ocean biomes.<br>
   Type: `float` Default: `100.0`
 - **cache_size**:<br>
-  The maximum number of biome lookup results (e.g., "is this position in an ocean?") to cache before being refreshed.
+  The maximum number of biome lookup results (e.g., "is this position in an ocean?") to cache before being refreshed.<br>
   Type: `integer` Default: `500`
 - **cache_time**:<br>
   The duration in minutes that cached biome results are kept before being refreshed.<br>
