@@ -16,4 +16,12 @@ public class Config {
     @Expose
     @SerializedName("boat_damage")
     public float DEEP_SEA_BOAT_DAMAGE = 100.0F;
+
+    @Expose
+    @SerializedName("cache_size")
+    public int DEEP_SEA_CACHE_SIZE = 500;
+
+    @Expose
+    @SerializedName("cache_time")
+    public int DEEP_SEA_CACHE_TIME = 240;
 }

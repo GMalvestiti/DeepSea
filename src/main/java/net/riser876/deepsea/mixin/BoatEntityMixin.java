@@ -1,21 +1,24 @@
 package net.riser876.deepsea.mixin;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import net.minecraft.entity.vehicle.BoatEntity;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.BiomeTags;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
 import net.riser876.deepsea.registry.DeepSeaTags;
 
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import static net.riser876.deepsea.config.ConfigManager.CONFIG;
 
@@ -23,54 +26,54 @@ import static net.riser876.deepsea.config.ConfigManager.CONFIG;
 public class BoatEntityMixin {
 
     @Unique
-    private static final Map<RegistryKey<Biome>, Boolean> DEEP_SEA_OCEAN_BIOME_CACHE = new ConcurrentHashMap<>();
+    private static final Cache<@NotNull Pair<String, ChunkPos>, Boolean> DEEP_SEA_CACHE =
+            Caffeine.newBuilder()
+                    .expireAfterWrite(CONFIG.DEEP_SEA_CACHE_TIME, TimeUnit.MINUTES)
+                    .maximumSize(CONFIG.DEEP_SEA_CACHE_SIZE)
+                    .build();
 
-    @Unique
-    private int deepSeaTickCounter = 0;
+    @Unique private int deepSeaTickCounter = 0;
 
-    @Unique
-    private boolean deepSeaCheckInProgress = false;
+    @Unique private boolean deepSeaCheckInProgress = false;
 
     @Inject(
         method = "tick",
         at = @At("HEAD")
     )
     private void onDeepSeaTick(CallbackInfo ci) {
-        if (deepSeaCheckInProgress || deepSeaTickCounter++ != CONFIG.DEEP_SEA_TICK_INTERVAL) {
-            return;
-        }
-
-        BoatEntity boat = (BoatEntity)(Object)this;
-
-        if (boat.getWorld().isClient() || boat.getPassengerList().isEmpty() || !boat.isTouchingWater()) {
-            deepSeaTickCounter = 0;
-            return;
-        }
+        if (deepSeaCheckInProgress || ++deepSeaTickCounter < CONFIG.DEEP_SEA_TICK_INTERVAL) return;
 
         deepSeaCheckInProgress = true;
         deepSeaTickCounter = 0;
 
+        BoatEntity boat = (BoatEntity) (Object) this;
+
+        if (boat.getWorld().isClient() || !boat.hasPassengers()
+                || !boat.isTouchingWater() || !boat.getType().isIn(DeepSeaTags.DEEP_SEA_BOAT)) {
+            deepSeaCheckInProgress = false;
+            return;
+        }
+
         ServerWorld world = (ServerWorld) boat.getWorld();
 
-        world.getServer().execute(() -> {
-            try {
-                if (boat.isRemoved() || !boat.getType().isIn(DeepSeaTags.DEEP_SEA_BOAT)) return;
+        Pair<String, ChunkPos> cacheKey = Pair.of(world.getRegistryKey().getValue().toString(), boat.getChunkPos());
 
-                RegistryEntry<Biome> biomeEntry = world.getBiome(boat.getBlockPos());
-                RegistryKey<Biome> biomeKey = biomeEntry.getKey().orElse(null);
+        Boolean cached = DEEP_SEA_CACHE.getIfPresent(cacheKey);
 
-                if (biomeKey != null) {
-                    boolean isOcean = DEEP_SEA_OCEAN_BIOME_CACHE.computeIfAbsent(biomeKey, key ->
-                            biomeEntry.isIn(BiomeTags.IS_OCEAN)
-                    );
+        boolean isOcean;
 
-                    if (isOcean) {
-                        boat.damage(boat.getDamageSources().generic(), CONFIG.DEEP_SEA_BOAT_DAMAGE);
-                    }
-                }
-            } finally {
-                deepSeaCheckInProgress = false;
-            }
-        });
+        if (cached != null) {
+            isOcean = cached;
+        } else {
+            RegistryEntry<Biome> biomeEntry = world.getBiome(boat.getBlockPos());
+            isOcean = biomeEntry.isIn(BiomeTags.IS_OCEAN);
+            DEEP_SEA_CACHE.put(cacheKey, isOcean);
+        }
+
+        if (isOcean) {
+            boat.damage(boat.getDamageSources().generic(), CONFIG.DEEP_SEA_BOAT_DAMAGE);
+        }
+
+        deepSeaCheckInProgress = false;
     }
 }
