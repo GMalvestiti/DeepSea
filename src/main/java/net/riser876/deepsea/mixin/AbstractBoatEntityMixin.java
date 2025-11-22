@@ -34,23 +34,19 @@ public class AbstractBoatEntityMixin {
 
     @Unique private int deepSeaTickCounter = 0;
 
-    @Unique private boolean deepSeaCheckInProgress = false;
-
     @Inject(
             method = "tick",
             at = @At("HEAD")
     )
     private void onDeepSeaTick(CallbackInfo ci) {
-        if (deepSeaCheckInProgress || ++deepSeaTickCounter < CONFIG.DEEP_SEA_TICK_INTERVAL) return;
+        if (++deepSeaTickCounter < CONFIG.DEEP_SEA_TICK_INTERVAL) return;
 
-        deepSeaCheckInProgress = true;
         deepSeaTickCounter = 0;
 
         AbstractBoatEntity boat = (AbstractBoatEntity) (Object) this;
 
         if (boat.getWorld().isClient() || !boat.hasPassengers()
                 || !boat.isTouchingWater() || !boat.getType().isIn(DeepSeaTags.DEEP_SEA_BOAT)) {
-            deepSeaCheckInProgress = false;
             return;
         }
 
@@ -73,7 +69,5 @@ public class AbstractBoatEntityMixin {
         if (isOcean) {
             boat.damage(world, boat.getDamageSources().generic(), CONFIG.DEEP_SEA_BOAT_DAMAGE);
         }
-
-        deepSeaCheckInProgress = false;
     }
 }
