@@ -8,6 +8,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 public class ConfigManager {
 
@@ -47,6 +48,28 @@ public class ConfigManager {
             Files.write(ConfigManager.CONFIG_PATH, json.getBytes());
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static void validateConfig() {
+        if (Objects.isNull(CONFIG)) {
+            return;
+        }
+
+        if (CONFIG.DEEP_SEA_TICK_INTERVAL < 1) {
+            CONFIG.DEEP_SEA_TICK_INTERVAL = 100;
+        }
+
+        if (CONFIG.DEEP_SEA_BOAT_DAMAGE < 0.0F) {
+            CONFIG.DEEP_SEA_BOAT_DAMAGE = 100.0F;
+        }
+
+        if (CONFIG.DEEP_SEA_CACHE_SIZE < 1) {
+            CONFIG.DEEP_SEA_CACHE_SIZE = 500;
+        }
+
+        if (CONFIG.DEEP_SEA_CACHE_TIME < 1) {
+            CONFIG.DEEP_SEA_CACHE_TIME = 240;
         }
     }
 }
