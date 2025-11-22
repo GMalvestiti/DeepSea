@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static net.riser876.deepsea.config.ConfigManager.CONFIG;
@@ -17,6 +18,7 @@ public class DeepSeaMixinPlugin implements IMixinConfigPlugin {
     public void onLoad(String mixinPackage) {
         try {
             ConfigManager.loadConfig();
+            ConfigManager.validateConfig();
             DeepSeaGlobals.LOGGER.info("[DeepSea] Configuration loaded.");
         } catch (Exception e) {
             DeepSeaGlobals.LOGGER.error("[DeepSea] Failed to load configuration. Check your deepsea.json config file.", e);
@@ -26,6 +28,9 @@ public class DeepSeaMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (mixinClassName.contains("net.riser876.deepsea")) {
+            if (Objects.isNull(CONFIG)) {
+                return false;
+            }
             return CONFIG.ENABLED;
         }
         return true;
