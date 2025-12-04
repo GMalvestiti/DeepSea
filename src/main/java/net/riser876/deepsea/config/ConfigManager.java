@@ -56,20 +56,28 @@ public class ConfigManager {
             return;
         }
 
-        if (CONFIG.DEEP_SEA_TICK_INTERVAL < 1) {
-            CONFIG.DEEP_SEA_TICK_INTERVAL = 100;
+        if (CONFIG.TICK_INTERVAL < 1) {
+            CONFIG.TICK_INTERVAL = 100;
         }
 
-        if (CONFIG.DEEP_SEA_BOAT_DAMAGE < 0.0F) {
-            CONFIG.DEEP_SEA_BOAT_DAMAGE = 100.0F;
+        if (CONFIG.BOAT_DAMAGE < 0.0F) {
+            CONFIG.BOAT_DAMAGE = 100.0F;
         }
 
-        if (CONFIG.DEEP_SEA_CACHE_SIZE < 1) {
-            CONFIG.DEEP_SEA_CACHE_SIZE = 500;
+        if (CONFIG.CACHE.CACHE_SIZE < 1) {
+            CONFIG.CACHE.CACHE_SIZE = 500;
         }
 
-        if (CONFIG.DEEP_SEA_CACHE_TIME < 1) {
-            CONFIG.DEEP_SEA_CACHE_TIME = 240;
+        if (CONFIG.CACHE.CACHE_TIME < 1) {
+            CONFIG.CACHE.CACHE_TIME = 240;
+        }
+
+        if (CONFIG.SOUND.VOLUME < 0.0F) {
+            CONFIG.SOUND.VOLUME = 1.0F;
+        }
+
+        if (CONFIG.SOUND.PITCH < 0.0F) {
+            CONFIG.SOUND.PITCH = 1.0F;
         }
     }
 }

@@ -4,8 +4,8 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.BiomeTags;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
 import net.riser876.deepsea.registry.DeepSeaTags;
@@ -28,8 +28,8 @@ public class BoatEntityMixin {
     @Unique
     private static final Cache<@NotNull Pair<String, ChunkPos>, Boolean> DEEP_SEA_CACHE =
             Caffeine.newBuilder()
-                    .expireAfterWrite(CONFIG.DEEP_SEA_CACHE_TIME, TimeUnit.MINUTES)
-                    .maximumSize(CONFIG.DEEP_SEA_CACHE_SIZE)
+                    .expireAfterWrite(CONFIG.CACHE.CACHE_TIME, TimeUnit.MINUTES)
+                    .maximumSize(CONFIG.CACHE.CACHE_SIZE)
                     .build();
 
     @Unique private int deepSeaTickCounter = 0;
@@ -39,7 +39,7 @@ public class BoatEntityMixin {
         at = @At("HEAD")
     )
     private void onDeepSeaTick(CallbackInfo ci) {
-        if (++deepSeaTickCounter < CONFIG.DEEP_SEA_TICK_INTERVAL) return;
+        if (++deepSeaTickCounter < CONFIG.TICK_INTERVAL) return;
 
         deepSeaTickCounter = 0;
 
@@ -62,12 +62,24 @@ public class BoatEntityMixin {
             isOcean = cached;
         } else {
             RegistryEntry<Biome> biomeEntry = world.getBiome(boat.getBlockPos());
-            isOcean = biomeEntry.isIn(BiomeTags.IS_OCEAN);
+            isOcean = biomeEntry.isIn(DeepSeaTags.DEEP_SEA_BIOME);
             DEEP_SEA_CACHE.put(cacheKey, isOcean);
         }
 
         if (isOcean) {
-            boat.damage(boat.getDamageSources().generic(), CONFIG.DEEP_SEA_BOAT_DAMAGE);
+            if (CONFIG.SOUND.DEEP_SEA_PLAY_SOUND) {
+                boat.playSound(
+                        SoundEvents.ENTITY_PLAYER_ATTACK_STRONG,
+                        CONFIG.SOUND.VOLUME,
+                        CONFIG.SOUND.PITCH
+                );
+            }
+
+            if (CONFIG.DISCARD_BOAT) {
+                boat.kill();
+            } else {
+                boat.damage(boat.getDamageSources().magic(), CONFIG.BOAT_DAMAGE);
+            }
         }
     }
 }

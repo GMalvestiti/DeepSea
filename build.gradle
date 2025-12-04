@@ -1,6 +1,6 @@
 plugins {
     id 'fabric-loom' version '1.13-SNAPSHOT'
-    id 'maven-publish'
+    id 'com.gradleup.shadow' version "9.2.2"
 }
 
 version = project.mod_version
@@ -32,8 +32,7 @@ dependencies {
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    modImplementation "com.github.ben-manes.caffeine:caffeine:3.2.3"
-    include "com.github.ben-manes.caffeine:caffeine:3.2.3"
+    implementation "com.github.ben-manes.caffeine:caffeine:3.2.3"
 }
 
 processResources {
@@ -72,26 +71,24 @@ java {
     withSourcesJar()
 }
 
+shadowJar {
+    archiveClassifier.set("shadowed")
+
+    dependencies {
+        include(dependency("com.github.ben-manes.caffeine:caffeine"))
+    }
+
+    relocate("com.github.benmanes.caffeine", "${project.maven_group}.shaded.caffeine")
+}
+
+remapJar {
+    dependsOn shadowJar
+
+    inputFile.set(shadowJar.archiveFile)
+}
+
 jar {
     from("LICENSE") {
         rename { "${it}_${project.archivesBaseName}"}
-    }
-}
-
-// configure the maven publication
-publishing {
-    publications {
-        create("mavenJava", MavenPublication) {
-            artifactId = project.archives_base_name
-            from components.java
-        }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
     }
 }

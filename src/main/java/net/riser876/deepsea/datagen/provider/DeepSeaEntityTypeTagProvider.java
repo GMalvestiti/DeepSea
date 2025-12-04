@@ -8,9 +8,9 @@ import net.riser876.deepsea.registry.DeepSeaTags;
 
 import java.util.concurrent.CompletableFuture;
 
-public class DeepSeaTagProvider extends FabricTagProvider.EntityTypeTagProvider {
+public class DeepSeaEntityTypeTagProvider extends FabricTagProvider.EntityTypeTagProvider {
 
-    public DeepSeaTagProvider (FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
+    public DeepSeaEntityTypeTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
         super(output, completableFuture);
     }
 
