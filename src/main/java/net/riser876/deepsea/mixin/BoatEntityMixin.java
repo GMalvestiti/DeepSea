@@ -2,12 +2,12 @@ package net.riser876.deepsea.mixin;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import net.minecraft.entity.vehicle.BoatEntity;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.biome.Biome;
 import net.riser876.deepsea.registry.DeepSeaTags;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import static net.riser876.deepsea.config.ConfigManager.CONFIG;
 
-@Mixin(BoatEntity.class)
+@Mixin(Boat.class)
 public class BoatEntityMixin {
 
     @Unique
@@ -43,16 +43,16 @@ public class BoatEntityMixin {
 
         deepSeaTickCounter = 0;
 
-        BoatEntity boat = (BoatEntity) (Object) this;
+        Boat boat = (Boat) (Object) this;
 
-        if (boat.getWorld().isClient() || !boat.hasPassengers()
-                || !boat.isTouchingWater() || !boat.getType().isIn(DeepSeaTags.DEEP_SEA_BOAT)) {
+        if (boat.level().isClientSide() || !boat.isVehicle()
+                || !boat.isInWater() || !boat.getType().is(DeepSeaTags.DEEP_SEA_BOAT)) {
             return;
         }
 
-        ServerWorld world = (ServerWorld) boat.getWorld();
+        ServerLevel world = (ServerLevel) boat.level();
 
-        Pair<String, ChunkPos> cacheKey = Pair.of(world.getRegistryKey().getValue().toString(), boat.getChunkPos());
+        Pair<String, ChunkPos> cacheKey = Pair.of(world.dimension().location().toString(), boat.chunkPosition());
 
         Boolean cached = DEEP_SEA_CACHE.getIfPresent(cacheKey);
 
@@ -61,15 +61,15 @@ public class BoatEntityMixin {
         if (cached != null) {
             isOcean = cached;
         } else {
-            RegistryEntry<Biome> biomeEntry = world.getBiome(boat.getBlockPos());
-            isOcean = biomeEntry.isIn(DeepSeaTags.DEEP_SEA_BIOME);
+            Holder<Biome> biomeEntry = world.getBiome(boat.blockPosition());
+            isOcean = biomeEntry.is(DeepSeaTags.DEEP_SEA_BIOME);
             DEEP_SEA_CACHE.put(cacheKey, isOcean);
         }
 
         if (isOcean) {
             if (CONFIG.SOUND.DEEP_SEA_PLAY_SOUND) {
                 boat.playSound(
-                        SoundEvents.ENTITY_PLAYER_ATTACK_STRONG,
+                        SoundEvents.PLAYER_ATTACK_STRONG,
                         CONFIG.SOUND.VOLUME,
                         CONFIG.SOUND.PITCH
                 );
@@ -78,7 +78,7 @@ public class BoatEntityMixin {
             if (CONFIG.DISCARD_BOAT) {
                 boat.kill();
             } else {
-                boat.damage(boat.getDamageSources().magic(), CONFIG.BOAT_DAMAGE);
+                boat.hurt(boat.damageSources().magic(), CONFIG.BOAT_DAMAGE);
             }
         }
     }
