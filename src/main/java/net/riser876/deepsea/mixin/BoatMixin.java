@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import static net.riser876.deepsea.config.ConfigManager.CONFIG;
 
 @Mixin(Boat.class)
-public class BoatEntityMixin {
+public class BoatMixin {
 
     @Unique
     private static final Cache<@NotNull Pair<String, ChunkPos>, Boolean> DEEP_SEA_CACHE =
