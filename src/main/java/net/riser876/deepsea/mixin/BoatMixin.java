@@ -8,9 +8,9 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
+import net.riser876.deepsea.record.ChunkBiomeKey;
 import net.riser876.deepsea.registry.DeepSeaTags;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -26,59 +26,70 @@ import static net.riser876.deepsea.config.ConfigManager.CONFIG;
 public class BoatMixin {
 
     @Unique
-    private static final Cache<@NotNull Pair<String, ChunkPos>, Boolean> DEEP_SEA_CACHE =
+    private static final Cache<@NotNull ChunkBiomeKey, Boolean> DEEP_SEA_CACHE =
             Caffeine.newBuilder()
-                    .expireAfterWrite(CONFIG.CACHE.CACHE_TIME, TimeUnit.MINUTES)
                     .maximumSize(CONFIG.CACHE.CACHE_SIZE)
+                    .expireAfterAccess(CONFIG.CACHE.CACHE_TIME, TimeUnit.MINUTES)
                     .build();
 
-    @Unique private int deepSeaTickCounter = 0;
+    @Unique private boolean wasInDeepSea = false;
 
     @Inject(
         method = "tick",
-        at = @At("HEAD")
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/entity/vehicle/Boat;tickBubbleColumn()V"
+        ),
+        require = 0
     )
     private void onDeepSeaTick(CallbackInfo ci) {
-        if (++deepSeaTickCounter < CONFIG.TICK_INTERVAL) return;
-
-        deepSeaTickCounter = 0;
-
         Boat boat = (Boat) (Object) this;
 
-        if (boat.level().isClientSide() || !boat.isVehicle()
-                || !boat.isInWater() || !boat.getType().is(DeepSeaTags.DEEP_SEA_BOAT)) {
+        if ((boat.tickCount % CONFIG.TICK_INTERVAL) != 0) return;
+
+        if (boat.level().isClientSide()
+                || !boat.isVehicle()
+                || !boat.isInWater()
+                || !boat.getType().is(DeepSeaTags.DEEP_SEA_BOAT)) {
             return;
         }
 
-        ServerLevel world = (ServerLevel) boat.level();
+        ServerLevel level = (ServerLevel) boat.level();
+        ChunkPos chunkPos = boat.chunkPosition();
 
-        Pair<String, ChunkPos> cacheKey = Pair.of(world.dimension().location().toString(), boat.chunkPosition());
+        final ChunkBiomeKey cacheKey = new ChunkBiomeKey(
+                chunkPos.toLong(),
+                level.dimension().location()
+        );
 
         Boolean cached = DEEP_SEA_CACHE.getIfPresent(cacheKey);
 
-        boolean isOcean;
+        final boolean isOcean;
 
         if (cached != null) {
             isOcean = cached;
         } else {
-            Holder<Biome> biomeEntry = world.getBiome(boat.blockPosition());
+            Holder<Biome> biomeEntry = level.getBiome(boat.blockPosition());
             isOcean = biomeEntry.is(DeepSeaTags.DEEP_SEA_BIOME);
             DEEP_SEA_CACHE.put(cacheKey, isOcean);
         }
 
         if (isOcean) {
-            if (CONFIG.SOUND.DEEP_SEA_PLAY_SOUND) {
+            if (!wasInDeepSea && CONFIG.SOUND.DEEP_SEA_PLAY_SOUND) {
                 boat.playSound(
-                        SoundEvents.PLAYER_ATTACK_STRONG,
+                        SoundEvents.AMBIENT_UNDERWATER_ENTER,
                         CONFIG.SOUND.VOLUME,
                         CONFIG.SOUND.PITCH
                 );
+                wasInDeepSea = true;
+            } else {
+                wasInDeepSea = false;
             }
 
             if (CONFIG.DISCARD_BOAT) {
-                boat.kill();
+                boat.discard();
             } else {
-                boat.hurt(boat.damageSources().magic(), CONFIG.BOAT_DAMAGE);
+                boat.hurt(level.damageSources().drown(), CONFIG.BOAT_DAMAGE);
             }
         }
     }

@@ -39,7 +39,7 @@ dependencies {
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    implementation "com.github.ben-manes.caffeine:caffeine:3.2.3"
+    implementation "com.github.ben-manes.caffeine:caffeine:${project.caffeine_version}"
 }
 
 processResources {
