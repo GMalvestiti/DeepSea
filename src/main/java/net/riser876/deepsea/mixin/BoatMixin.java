@@ -32,15 +32,12 @@ public class BoatMixin {
                     .expireAfterAccess(CONFIG.CACHE.CACHE_TIME, TimeUnit.MINUTES)
                     .build();
 
-    @Unique private boolean wasInDeepSea = false;
-
     @Inject(
         method = "tick",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/world/entity/vehicle/Boat;tickBubbleColumn()V"
-        ),
-        require = 0
+        )
     )
     private void onDeepSeaTick(CallbackInfo ci) {
         Boat boat = (Boat) (Object) this;
@@ -75,15 +72,12 @@ public class BoatMixin {
         }
 
         if (isOcean) {
-            if (!wasInDeepSea && CONFIG.SOUND.DEEP_SEA_PLAY_SOUND) {
+            if (CONFIG.SOUND.DEEP_SEA_PLAY_SOUND) {
                 boat.playSound(
                         SoundEvents.AMBIENT_UNDERWATER_ENTER,
                         CONFIG.SOUND.VOLUME,
                         CONFIG.SOUND.PITCH
                 );
-                wasInDeepSea = true;
-            } else {
-                wasInDeepSea = false;
             }
 
             if (CONFIG.DISCARD_BOAT) {
