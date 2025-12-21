@@ -1,7 +1,5 @@
 package net.riser876.deepsea.mixin;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
 import net.riser876.deepsea.config.ConfigManager;
 import net.riser876.deepsea.util.DeepSeaGlobals;
 import org.objectweb.asm.tree.ClassNode;
