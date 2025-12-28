@@ -1,7 +1,7 @@
 package net.riser876.deepsea.record;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-public record ChunkBiomeKey(long chunkPos, ResourceLocation dimension) {
+public record ChunkBiomeKey(long chunkPos, Identifier dimension) {
 
 }

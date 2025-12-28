@@ -5,7 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.vehicle.AbstractBoat;
+import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.riser876.deepsea.record.ChunkBiomeKey;
@@ -36,7 +36,7 @@ public class AbstractBoatMixin {
             method = "tick",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/entity/vehicle/AbstractBoat;tickBubbleColumn()V"
+                    target = "Lnet/minecraft/world/entity/vehicle/boat/AbstractBoat;tickBubbleColumn()V"
             )
     )
     private void onDeepSeaTick(CallbackInfo ci) {
@@ -56,7 +56,7 @@ public class AbstractBoatMixin {
 
         final ChunkBiomeKey cacheKey = new ChunkBiomeKey(
                 chunkPos.toLong(),
-                level.dimension().location()
+                level.dimension().identifier()
         );
 
         Boolean cached = DEEP_SEA_CACHE.getIfPresent(cacheKey);
