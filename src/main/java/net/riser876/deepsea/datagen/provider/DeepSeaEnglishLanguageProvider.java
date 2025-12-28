@@ -16,5 +16,6 @@ public class DeepSeaEnglishLanguageProvider extends FabricLanguageProvider {
     @Override
     public void generateTranslations(HolderLookup.Provider wrapperLookup, TranslationBuilder translationBuilder) {
         translationBuilder.add(DeepSeaTags.DEEP_SEA_BOAT, "Deep Sea Boat");
+        translationBuilder.add(DeepSeaTags.DEEP_SEA_BIOME, "Deep Sea Ocean Biome");
     }
 }
