@@ -17,8 +17,7 @@ plugins {
     // Used for cross-compat for 26.1+ and older versions (https://codeberg.org/KikuGie/loom-back-compat)
     id("dev.kikugie.loom-back-compat") version "0.3"
 
-    // Sometimes it is needed to make Gradle run at all, so it doesn't hurt to have
-    // (https://github.com/gradle/foojay-toolchains)
+    // Sometimes it is needed to make Gradle run at all, so it doesn't hurt to have (https://github.com/gradle/foojay-toolchains)
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
@@ -39,11 +38,13 @@ stonecutter {
         }
 
         // See https://stonecutter.kikugie.dev/wiki/start/#choosing-minecraft-versions
-        match("1.21.1", "fabric", "neoforge")
-        match("1.21.11", "fabric", "neoforge")
-        match("26.2", "fabric", "neoforge", version = "26.2")
-        vcsVersion = "26.2-fabric"
+        match("1.21", "fabric", "neoforge")
+        match("1.21.2", "fabric")
+        match("1.21.9", "fabric")
+        match("1.21.11", "fabric")
+        match("26.1", "fabric", "neoforge")
+        vcsVersion = "26.1-fabric"
     }
 }
 
-rootProject.name = "Template Multiloader"
+rootProject.name = "DeepSea"
