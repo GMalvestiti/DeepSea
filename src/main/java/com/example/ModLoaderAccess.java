@@ -1,7 +1,6 @@
 package com.example;
 
-// Similar to this you can implement loader-specific functionality
-// in a way that works on either mod loader.
+// Similar to this you can implement loader-specific functionality in a way that works on either mod loader
 public sealed interface ModLoaderAccess {
     ModLoaderAccess INSTANCE =
         /*? if fabric{*/new FabricLoaderAccess();
