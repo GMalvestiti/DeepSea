@@ -3,31 +3,33 @@
   "id": "${id}",
   "version": "${version}",
   "name": "${name}",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "description": "${description}",
   "authors": [
-    "Me!"
+    "${author}"
   ],
   "contact": {
-    "homepage": "https://stonecutter.kikugie.dev/",
-    "sources": "https://codeberg.org/stonecutter/template-fabric"
+    "homepage": "${contact_homepage}",
+    "sources": "${contact_sources}",
+    "issues": "${contact_issues}"
   },
-  "license": "CC0-1.0",
-  "icon": "assets/template/icon.png",
+  "license": "${license}",
+  "icon": "assets/${id}/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.example.TemplateModFabric"
+      "net.riser876.deepsea.DeepSeaFabric"
     ],
     "fabric-datagen": [
-      "com.example.datagen.DataGenerator"
+      "net.riser876.deepsea.datagen.fabric.DeepSeaDataGeneratorFabric"
     ]
   },
   "mixins": [
-    "template.mixins.json"
+    "${id}.mixins.json"
   ],
-  "accessWidener": "template.ct",
+  "accessWidener": "${id}.ct",
   "depends": {
-    "fabricloader": ">=0.17",
+    "fabricloader": ">=${fabric_loader}",
+    "fabric-api": ">=${fabric_api}",
     "minecraft": "${minecraft}"
   }
 }

@@ -1,4 +1,4 @@
-license = "CC0-1.0"
+license = "${license}"
 
 modLoader="javafml"
 loaderVersion="[1,)"
@@ -7,15 +7,22 @@ loaderVersion="[1,)"
 modId = "${id}"
 displayName = "${name}"
 version = "${version}"
-authors = "Me!"
-description = "This is an example description! Tell everyone what your mod is about!"
+authors = "${author}"
+description = "${description}"
 
-logoFile = "assets/template/icon.png"
-#displayURL = "..."
-#issueTrackerUrl = "..."
+logoFile = "assets/${id}/icon.png"
+displayURL = "${contact_homepage}"
+issueTrackerUrl = "${contact_issues}"
 
 [[mixings]]
-config = "template.mixins.json"
+config = "${id}.mixins.json"
+
+[[dependencies.${id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "[${neoforge_loader},)"
+ordering = "NONE"
+side = "BOTH"
 
 [[dependencies.${id}]]
 modId = "minecraft"

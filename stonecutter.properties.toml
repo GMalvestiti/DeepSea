@@ -4,8 +4,17 @@ mod.name = "DeepSea"
 mod.group = "net.riser876"
 mod.version = "3.2.1"
 
-deps.fabric_loader = "0.19.3"
 loomx.loom_version = "1.17-SNAPSHOT"
+
+deps.fabric_loader = "0.19.3"
+deps.caffeine = "3.2.3"
+
+mod.description = "Disables boat navigation on ocean regions"
+mod.author = "Riser876"
+mod.contact_homepage = "https://modrinth.com/user/Riser876"
+mod.contact_sources = "https://github.com/GMalvestiti/DeepSea"
+mod.contact_issues = "https://github.com/GMalvestiti/DeepSea/issues"
+mod.license = "MIT"
 
 ["1.21"]
 # List of releases to be marked compatible on Modrinth/Curseforge
@@ -18,7 +27,7 @@ deps.fabric_api = "0.102.0+1.21"
 
 [neoforge."1.21"]
 mod.mc_compat = "[1.21, 1.21.1]"
-deps.neo_loader = "21.0.167"
+deps.neoforge_loader = "21.0.167"
 
 
 ["1.21.2"]
@@ -30,7 +39,7 @@ deps.fabric_api = "0.106.1+1.21.2"
 
 [neoforge."1.21.2"]
 mod.mc_compat = "[1.21.2, 1.21.8]"
-deps.neo_loader = "21.2.1-beta"
+deps.neoforge_loader = "21.2.1-beta"
 
 
 ["1.21.9"]
@@ -42,7 +51,7 @@ deps.fabric_api = "0.134.1+1.21.9"
 
 [neoforge."1.21.9"]
 mod.mc_compat = "[1.21.9, 1.21.10]"
-deps.neo_loader = "21.9.16-beta"
+deps.neoforge_loader = "21.9.16-beta"
 
 
 ["1.21.11"]
@@ -54,7 +63,7 @@ deps.fabric_api = "0.141.4+1.21.11"
 
 [neoforge."1.21.11"]
 mod.mc_compat = "1.21.11"
-deps.neo_loader = "21.11.42"
+deps.neoforge_loader = "21.11.42"
 
 
 ["26.1"]
@@ -66,4 +75,4 @@ deps.fabric_api = "0.145.1+26.1"
 
 [neoforge."26.1"]
 mod.mc_compat = "[26.1,)"
-deps.neo_loader = "26.1.0.19-beta"
+deps.neoforge_loader = "26.1.0.19-beta"
