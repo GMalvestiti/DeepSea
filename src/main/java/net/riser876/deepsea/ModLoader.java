@@ -5,13 +5,14 @@ import java.nio.file.Path;
 public sealed interface ModLoader {
 
     ModLoader INSTANCE =
-        /*? if fabric{*/new FabricModLoader();
-        /*?} elif neoforge *///new NeoForgeModLoader();
+        /*? if fabric{*//*new FabricModLoader();
+        *//*?} elif neoforge */new NeoForgeModLoader();
 
     Path getConfigDir();
 
     //? if fabric {
-    final class FabricModLoader implements ModLoader {
+    /*final class FabricModLoader implements ModLoader {
+
         private final net.fabricmc.loader.api.FabricLoader loader = net.fabricmc.loader.api.FabricLoader.getInstance();
 
         @Override
@@ -19,13 +20,13 @@ public sealed interface ModLoader {
             return loader.getConfigDir();
         }
     }
-    //?} elif neoforge {
-    /*final class NeoForgeModLoader implements ModLoader {
+    *///?} elif neoforge {
+    final class NeoForgeModLoader implements ModLoader {
 
         @Override
         public Path getConfigDir() {
-            return null;
+            return net.neoforged.fml.loading.FMLPaths.CONFIGDIR.get();
         }
     }
-    *///?}
+    //?}
 }

@@ -1,5 +1,5 @@
 plugins {
-    id("java-library")
+    id("idea")
     id("net.neoforged.moddev") version "2.0.141"
     id("neoforge-mutex")
     id("com.gradleup.shadow") version "9.5.1"
@@ -8,16 +8,15 @@ plugins {
 version = "${property("mod.version")}+${sc.current.version}"
 base.archivesName = "${property("mod.id") as String}-neoforge"
 
-val dataVersionPath: String = "${sc.current.parsed}-neoforge"
-
-sourceSets.main {
-    resources.srcDir("versions/$dataVersionPath/src/generated/resources")
-}
-
 val shadowGroup: String = property("mod.group") as String
 
 configurations {
     shadow
+}
+
+sourceSets.main {
+    resources.srcDir("generated/resources")
+    resources.srcDir("src/main/resources")
 }
 
 repositories {
@@ -84,7 +83,7 @@ neoForge {
                 programArguments.addAll(
                     "--mod", property("mod.id") as String,
                     "--all",
-                    "--output", file("versions/$dataVersionPath/src/generated/resources").absolutePath,
+                    "--output", file("src/main/generated/resources").absolutePath,
                     "--existing", file("src/main/resources").absolutePath
                 )
             }
@@ -97,7 +96,7 @@ neoForge {
                 programArguments.addAll(
                     "--mod", property("mod.id") as String,
                     "--all",
-                    "--output", file("versions/$dataVersionPath/src/generated/resources").absolutePath,
+                    "--output", file("src/main/generated/resources").absolutePath,
                     "--existing", file("src/main/resources").absolutePath
                 )
             }
@@ -139,21 +138,17 @@ java {
     }
 }
 
-tasks.shadowJar {
-    archiveClassifier.set("")
-
-    configurations = listOf(project.configurations.shadow.get())
-
-    relocate("com.github.benmanes.caffeine", "${shadowGroup}.shaded.caffeine")
-    relocate("com.google.errorprone", "${shadowGroup}.shaded.errorprone")
-    relocate("org.jspecify", "${shadowGroup}.shaded.jspecify")
-}
-
-tasks.build {
-    dependsOn(tasks.shadowJar)
-}
-
 tasks {
+    shadowJar {
+        archiveClassifier.set("")
+
+        configurations = listOf(project.configurations.shadow.get())
+
+        relocate("com.github.benmanes.caffeine", "${shadowGroup}.shaded.caffeine")
+        relocate("com.google.errorprone", "${shadowGroup}.shaded.errorprone")
+        relocate("org.jspecify", "${shadowGroup}.shaded.jspecify")
+    }
+
     processResources {
         fun MutableMap<String, String>.register(key: String, property: String) {
             val value: String = sc.properties[property]
@@ -191,8 +186,22 @@ tasks {
         group = "build"
         description = "Builds mod jars and copies results to `build/libs/{mod version}/`"
 
+        dependsOn(shadowJar)
+
         inputs.property("version", project.property("mod.version"))
-        from(jar.flatMap { it.archiveFile }, named<Jar>("sourcesJar").flatMap { it.archiveFile })
+
+        from(
+            jar.flatMap { it.archiveFile },
+            named<Jar>("sourcesJar").flatMap { it.archiveFile }
+        )
+
         into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
+    }
+}
+
+idea {
+    module {
+        isDownloadSources = true
+        isDownloadJavadoc = true
     }
 }

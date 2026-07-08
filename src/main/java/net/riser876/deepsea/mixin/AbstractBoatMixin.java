@@ -5,8 +5,10 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+//? if <1.21.11 {
+/*import net.minecraft.world.entity.vehicle.AbstractBoat;
+*///?} else
 import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.riser876.deepsea.record.ChunkBiomeKey;
 import net.riser876.deepsea.registry.DeepSeaTags;
@@ -38,6 +40,9 @@ public class AbstractBoatMixin {
         method = "tick",
         at = @At(
             value = "INVOKE",
+            //? if <1.21.11 {
+            /*target = "Lnet/minecraft/world/entity/vehicle/AbstractBoat;tickBubbleColumn()V"
+            *///?} else
             target = "Lnet/minecraft/world/entity/vehicle/boat/AbstractBoat;tickBubbleColumn()V"
         )
     )
@@ -49,15 +54,23 @@ public class AbstractBoatMixin {
         if (boat.level().isClientSide()
             || !boat.isVehicle()
             || !boat.isInWater()
+            //? if <26.1 {
+            /*|| !boat.getType().is(DeepSeaTags.DEEP_SEA_BOAT)) {
+            *///?} else
             || !boat.is(DeepSeaTags.DEEP_SEA_BOAT)) {
             return;
         }
 
         ServerLevel level = (ServerLevel) boat.level();
-        ChunkPos chunkPos = boat.chunkPosition();
 
         final ChunkBiomeKey cacheKey = new ChunkBiomeKey(
-            chunkPos.pack(),
+            //? if <26.1 {
+            /*boat.chunkPosition().toLong(),
+            *///?} else
+            boat.chunkPosition().pack(),
+            //? if <1.21.11 {
+            /*level.dimension().location()
+             *///?} else
             level.dimension().identifier()
         );
 
@@ -83,6 +96,9 @@ public class AbstractBoatMixin {
             if (CONFIG.DISCARD_BOAT) {
                 boat.discard();
             } else {
+                //? if <1.21.2 {
+                /*boat.hurt(level.damageSources().drown(), CONFIG.BOAT_DAMAGE);
+                *///?} else
                 boat.hurtServer(level, level.damageSources().drown(), CONFIG.BOAT_DAMAGE);
             }
         }

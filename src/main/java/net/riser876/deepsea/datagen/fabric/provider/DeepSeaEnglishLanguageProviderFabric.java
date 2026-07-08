@@ -1,7 +1,7 @@
 package net.riser876.deepsea.datagen.fabric.provider;
 
 //? if fabric {
-import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+/*import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.core.HolderLookup;
 import net.riser876.deepsea.registry.DeepSeaTags;
@@ -21,4 +21,4 @@ public class DeepSeaEnglishLanguageProviderFabric extends FabricLanguageProvider
         translationBuilder.add(DeepSeaTags.DEEP_SEA_BIOME, "Deep Sea Ocean Biome");
     }
 }
-//?}
+*///?}

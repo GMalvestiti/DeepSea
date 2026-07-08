@@ -9,8 +9,8 @@ import static net.riser876.deepsea.config.ConfigManager.CONFIG;
 
 public class DeepSeaCommon {
 
-    public static final String MOD_ID = /*$ mod_id*/ "";
-    public static final Logger LOGGER = LoggerFactory.getLogger(/*$ mod_id*/ "");
+    public static final String MOD_ID = /*$ mod_id*/ "deepsea";
+    public static final Logger LOGGER = LoggerFactory.getLogger( DeepSeaCommon.MOD_ID);
 
     public static void init() {
         if (Objects.nonNull(CONFIG) && CONFIG.ENABLED) {

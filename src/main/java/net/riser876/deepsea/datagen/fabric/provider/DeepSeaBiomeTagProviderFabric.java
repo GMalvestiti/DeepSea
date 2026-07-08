@@ -1,7 +1,7 @@
 package net.riser876.deepsea.datagen.fabric.provider;
 
 //? if fabric {
-import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+/*import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags;
 import net.minecraft.core.HolderLookup;
@@ -23,4 +23,4 @@ public class DeepSeaBiomeTagProviderFabric extends FabricTagsProvider<Biome> {
         builder(DeepSeaTags.DEEP_SEA_BIOME).addOptionalTag(ConventionalBiomeTags.IS_OCEAN);
     }
 }
-//?}
+*///?}

@@ -1,4 +1,5 @@
 plugins {
+    id("idea")
     // This plugin applies the correct loom variant based on the Minecraft version
     id("dev.kikugie.loom-back-compat")
     id("com.gradleup.shadow") version "9.5.1"
@@ -16,12 +17,6 @@ val shadowGroup: String = property("mod.group") as String
 
 configurations {
     shadow
-}
-
-fabricApi {
-    configureDataGeneration {
-        client = true
-    }
 }
 
 repositories {
@@ -68,6 +63,12 @@ loom {
     }
 }
 
+fabricApi {
+    configureDataGeneration {
+        client = true
+    }
+}
+
 val requiredJava: JavaVersion = when {
     sc.current.parsed >= "26.1" -> JavaVersion.VERSION_25
     sc.current.parsed >= "1.20.5" -> JavaVersion.VERSION_21
@@ -87,21 +88,17 @@ java {
     }
 }
 
-tasks.shadowJar {
-    archiveClassifier.set("")
-
-    configurations = listOf(project.configurations.shadow.get())
-
-    relocate("com.github.benmanes.caffeine", "${shadowGroup}.shaded.caffeine")
-    relocate("com.google.errorprone", "${shadowGroup}.shaded.errorprone")
-    relocate("org.jspecify", "${shadowGroup}.shaded.jspecify")
-}
-
-tasks.build {
-    dependsOn(tasks.shadowJar)
-}
-
 tasks {
+    shadowJar {
+        archiveClassifier.set("")
+
+        configurations = listOf(project.configurations.shadow.get())
+
+        relocate("com.github.benmanes.caffeine", "${shadowGroup}.shaded.caffeine")
+        relocate("com.google.errorprone", "${shadowGroup}.shaded.errorprone")
+        relocate("org.jspecify", "${shadowGroup}.shaded.jspecify")
+    }
+
     processResources {
         fun MutableMap<String, String>.register(key: String, property: String) {
             val value: String = sc.properties[property]
@@ -136,9 +133,23 @@ tasks {
         group = "build"
         description = "Builds mod jars and copies results to `build/libs/{mod version}/`"
 
+        dependsOn(shadowJar)
+
         inputs.property("version", project.property("mod.version"))
+
         // loomx.mod(Sources)Jar returns the jar task for the applied loom variant
-        from(loomx.modJar.flatMap { it.archiveFile }, loomx.modSourcesJar.flatMap { it.archiveFile })
+        from(
+            loomx.modJar.flatMap { it.archiveFile },
+            loomx.modSourcesJar.flatMap { it.archiveFile }
+        )
+
         into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
+    }
+}
+
+idea {
+    module {
+        isDownloadSources = true
+        isDownloadJavadoc = true
     }
 }
