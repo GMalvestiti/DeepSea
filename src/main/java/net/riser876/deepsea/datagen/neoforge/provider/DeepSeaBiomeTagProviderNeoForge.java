@@ -1,7 +1,7 @@
 package net.riser876.deepsea.datagen.neoforge.provider;
 
 //? if neoforge {
-import net.minecraft.core.HolderLookup;
+/*import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.BiomeTagsProvider;
 import net.minecraft.tags.BiomeTags;
@@ -22,4 +22,4 @@ public class DeepSeaBiomeTagProviderNeoForge extends BiomeTagsProvider {
         tag(DeepSeaTags.DEEP_SEA_BIOME).addTag(BiomeTags.IS_OCEAN);
     }
 }
-//?}
+*///?}

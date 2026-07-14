@@ -1,7 +1,7 @@
 package net.riser876.deepsea.datagen.neoforge.provider;
 
 //? if neoforge {
-import net.minecraft.core.HolderLookup;
+/*import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
 import net.neoforged.neoforge.common.Tags;
@@ -22,4 +22,4 @@ public class DeepSeaEntityTypeTagProviderNeoForge extends EntityTypeTagsProvider
         tag(DeepSeaTags.DEEP_SEA_BOAT).addTag(Tags.EntityTypes.BOATS);
     }
 }
-//?}
+*///?}

@@ -1,7 +1,7 @@
 package net.riser876.deepsea;
 
 //? if neoforge {
-import net.neoforged.bus.api.IEventBus;
+/*import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 
@@ -12,4 +12,4 @@ public class DeepSeaNeoForge {
         DeepSeaCommon.init();
     }
 }
-//?}
+*///?}

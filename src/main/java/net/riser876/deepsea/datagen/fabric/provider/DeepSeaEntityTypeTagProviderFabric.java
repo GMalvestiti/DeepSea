@@ -1,7 +1,7 @@
 package net.riser876.deepsea.datagen.fabric.provider;
 
 //? if fabric {
-/*import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEntityTypeTags;
 import net.minecraft.core.HolderLookup;
@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class DeepSeaEntityTypeTagProviderFabric extends FabricTagsProvider.EntityTypeTagsProvider {
 
-    public DeepSeaEntityTypeTagProviderFabric(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> completableFuture) {
+    public DeepSeaEntityTypeTagProviderFabric(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> completableFuture) {
         super(output, completableFuture);
     }
 
@@ -21,4 +21,4 @@ public class DeepSeaEntityTypeTagProviderFabric extends FabricTagsProvider.Entit
         builder(DeepSeaTags.DEEP_SEA_BOAT).addOptionalTag(ConventionalEntityTypeTags.BOATS);
     }
 }
-*///?}
+//?}

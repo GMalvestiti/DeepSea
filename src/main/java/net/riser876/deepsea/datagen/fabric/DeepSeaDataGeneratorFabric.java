@@ -1,7 +1,7 @@
 package net.riser876.deepsea.datagen.fabric;
 
 //? if fabric {
-/*import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
+import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.riser876.deepsea.DeepSeaCommon;
 import net.riser876.deepsea.datagen.fabric.provider.DeepSeaBiomeTagProviderFabric;
@@ -23,4 +23,4 @@ public class DeepSeaDataGeneratorFabric implements DataGeneratorEntrypoint {
         return DeepSeaCommon.MOD_ID;
     }
 }
-*///?}
+//?}

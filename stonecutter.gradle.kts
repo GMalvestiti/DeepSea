@@ -2,7 +2,7 @@ plugins {
     id("dev.kikugie.stonecutter")
 }
 
-stonecutter active "26.1-neoforge"
+stonecutter active "1.21-fabric"
 
 // See https://stonecutter.kikugie.dev/wiki/config/params
 stonecutter parameters {
@@ -31,10 +31,6 @@ stonecutter parameters {
         string(current.parsed >= "26.1") {
             replace("classTweaker v2 named", "classTweaker v2 official")
             replace("FabricDataOutput", "FabricPackOutput")
-        }
-
-        string(current.parsed >= "1.21.2") {
-            replace("Boat", "AbstractBoat")
         }
     }
 }

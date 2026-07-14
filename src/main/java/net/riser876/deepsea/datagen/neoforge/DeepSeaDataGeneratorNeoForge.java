@@ -1,7 +1,7 @@
 package net.riser876.deepsea.datagen.neoforge;
 
 //? if neoforge {
-import net.minecraft.core.HolderLookup;
+/*import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -29,4 +29,4 @@ public class DeepSeaDataGeneratorNeoForge {
         event.addProvider(new DeepSeaBiomeTagProviderNeoForge(output, lookupProvider));
     }
 }
-//?}
+*///?}
