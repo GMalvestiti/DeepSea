@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import static net.riser876.deepsea.config.ConfigManager.CONFIG;
 
-@Mixin(/*? if <1.21.2 {*/Boat.class)/*?} else *///AbstractBoat.class)
+@Mixin(/*? if <1.21.2 {*/Boat/*?} else {*//*AbstractBoat*//*?}*/.class)
 public class AbstractBoatMixin {
 
     @Unique
