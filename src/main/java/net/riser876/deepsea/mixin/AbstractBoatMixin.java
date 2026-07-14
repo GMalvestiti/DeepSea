@@ -6,12 +6,12 @@ import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 //? if <1.21.2 {
-import net.minecraft.world.entity.vehicle.Boat;
-//?} elif <1.21.11 {
+/*import net.minecraft.world.entity.vehicle.Boat;
+*///?} elif <1.21.11 {
 /*import net.minecraft.world.entity.vehicle.AbstractBoat;
 *///?} else {
-/*import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
-*///?}
+import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
+//?}
 import net.minecraft.world.level.biome.Biome;
 import net.riser876.deepsea.record.ChunkBiomeKey;
 import net.riser876.deepsea.registry.DeepSeaTags;
@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import static net.riser876.deepsea.config.ConfigManager.CONFIG;
 
-@Mixin(/*? if <1.21.2 {*/Boat/*?} else {*//*AbstractBoat*//*?}*/.class)
+@Mixin(/*? if <1.21.2 {*//*Boat*//*?} else {*/AbstractBoat/*?}*/.class)
 public class AbstractBoatMixin {
 
     @Unique
@@ -44,19 +44,19 @@ public class AbstractBoatMixin {
         at = @At(
             value = "INVOKE",
             //? if <1.21.2 {
-            target = "Lnet/minecraft/world/entity/vehicle/Boat;tickBubbleColumn()V"
-            //?} elif <1.21.11 {
+            /*target = "Lnet/minecraft/world/entity/vehicle/Boat;tickBubbleColumn()V"
+            *///?} elif <1.21.11 {
             /*target = "Lnet/minecraft/world/entity/vehicle/AbstractBoat;tickBubbleColumn()V"
             *///?} else {
-            /*target = "Lnet/minecraft/world/entity/vehicle/boat/AbstractBoat;tickBubbleColumn()V"
-            *///?}
+            target = "Lnet/minecraft/world/entity/vehicle/boat/AbstractBoat;tickBubbleColumn()V"
+            //?}
         )
     )
     private void deepsea$tick(CallbackInfo ci) {
         //? if <1.21.2 {
-        Boat boat = (Boat) (Object) this;
-        //?} else
-        //AbstractBoat boat = (AbstractBoat) (Object) this;
+        /*Boat boat = (Boat) (Object) this;
+        *///?} else
+        AbstractBoat boat = (AbstractBoat) (Object) this;
 
         if ((boat.tickCount % CONFIG.TICK_INTERVAL) != 0) return;
 
@@ -64,9 +64,9 @@ public class AbstractBoatMixin {
             || !boat.isVehicle()
             || !boat.isInWater()
             //? if <26.1 {
-            || !boat.getType().is(DeepSeaTags.DEEP_SEA_BOAT)) {
-            //?} else
-            //|| !boat.is(DeepSeaTags.DEEP_SEA_BOAT)) {
+            /*|| !boat.getType().is(DeepSeaTags.DEEP_SEA_BOAT)) {
+            *///?} else
+            || !boat.is(DeepSeaTags.DEEP_SEA_BOAT)) {
             return;
         }
 
@@ -74,13 +74,13 @@ public class AbstractBoatMixin {
 
         final ChunkBiomeKey cacheKey = new ChunkBiomeKey(
             //? if <26.1 {
-            boat.chunkPosition().toLong(),
-            //?} else
-            //boat.chunkPosition().pack(),
+            /*boat.chunkPosition().toLong(),
+            *///?} else
+            boat.chunkPosition().pack(),
             //? if <1.21.11 {
-            level.dimension().location()
-             //?} else
-            //level.dimension().identifier()
+            /*level.dimension().location()
+             *///?} else
+            level.dimension().identifier()
         );
 
         Boolean cached = DEEP_SEA_CACHE.getIfPresent(cacheKey);
@@ -106,9 +106,9 @@ public class AbstractBoatMixin {
                 boat.discard();
             } else {
                 //? if <1.21.2 {
-                boat.hurt(level.damageSources().drown(), CONFIG.BOAT_DAMAGE);
-                //?} else
-                //boat.hurtServer(level, level.damageSources().drown(), CONFIG.BOAT_DAMAGE);
+                /*boat.hurt(level.damageSources().drown(), CONFIG.BOAT_DAMAGE);
+                *///?} else
+                boat.hurtServer(level, level.damageSources().drown(), CONFIG.BOAT_DAMAGE);
             }
         }
     }
