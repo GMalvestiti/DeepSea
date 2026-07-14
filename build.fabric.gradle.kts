@@ -97,6 +97,8 @@ tasks {
         relocate("com.github.benmanes.caffeine", "${shadowGroup}.shaded.caffeine")
         relocate("com.google.errorprone", "${shadowGroup}.shaded.errorprone")
         relocate("org.jspecify", "${shadowGroup}.shaded.jspecify")
+
+        mergeServiceFiles()
     }
 
     processResources {
@@ -133,14 +135,11 @@ tasks {
         group = "build"
         description = "Builds mod jars and copies results to `build/libs/{mod version}/`"
 
-        dependsOn(shadowJar)
-
         inputs.property("version", project.property("mod.version"))
 
         // loomx.mod(Sources)Jar returns the jar task for the applied loom variant
         from(
-            loomx.modJar.flatMap { it.archiveFile },
-            loomx.modSourcesJar.flatMap { it.archiveFile }
+            loomx.modJar.flatMap { it.archiveFile }
         )
 
         into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
