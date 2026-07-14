@@ -2,7 +2,7 @@ package net.riser876.deepsea.datagen.fabric.provider;
 
 //? if fabric {
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -12,7 +12,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.CompletableFuture;
 
-public class DeepSeaBiomeTagProviderFabric extends FabricTagsProvider<Biome> {
+public class DeepSeaBiomeTagProviderFabric extends FabricTagProvider<Biome> {
 
     public DeepSeaBiomeTagProviderFabric(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> completableFuture) {
         super(output, Registries.BIOME, completableFuture);
@@ -20,7 +20,10 @@ public class DeepSeaBiomeTagProviderFabric extends FabricTagsProvider<Biome> {
 
     @Override
     protected void addTags(HolderLookup.@NonNull Provider registries) {
-        builder(DeepSeaTags.DEEP_SEA_BIOME).addOptionalTag(ConventionalBiomeTags.IS_OCEAN);
+        //? if <1.21.9 {
+        tag(DeepSeaTags.DEEP_SEA_BIOME).addOptionalTag(ConventionalBiomeTags.IS_OCEAN.location());
+        //?} else
+        //builder(DeepSeaTags.DEEP_SEA_BIOME).addOptionalTag(ConventionalBiomeTags.IS_OCEAN);
     }
 }
 //?}

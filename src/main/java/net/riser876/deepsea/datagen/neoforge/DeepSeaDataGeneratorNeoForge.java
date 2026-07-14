@@ -10,7 +10,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.riser876.deepsea.DeepSeaCommon;
 import net.riser876.deepsea.datagen.neoforge.provider.DeepSeaBiomeTagProviderNeoForge;
 import net.riser876.deepsea.datagen.neoforge.provider.DeepSeaEnglishLanguageProviderNeoForge;
-import net.riser876.deepsea.datagen.neoforge.provider.DeepSeaEntityTypeTagProviderNeoForge;
+import net.riser876.deepsea.datagen.neoforge.provider.DeepSeaEntityTypeTagsProviderNeoForge;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -25,7 +25,7 @@ public class DeepSeaDataGeneratorNeoForge {
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
         event.addProvider(new DeepSeaEnglishLanguageProviderNeoForge(output));
-        event.addProvider(new DeepSeaEntityTypeTagProviderNeoForge(output, lookupProvider));
+        event.addProvider(new DeepSeaEntityTypeTagsProviderNeoForge(output, lookupProvider));
         event.addProvider(new DeepSeaBiomeTagProviderNeoForge(output, lookupProvider));
     }
 }

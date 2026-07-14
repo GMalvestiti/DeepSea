@@ -11,9 +11,9 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.CompletableFuture;
 
-public class DeepSeaEntityTypeTagProviderNeoForge extends EntityTypeTagsProvider {
+public class DeepSeaEntityTypeTagsProviderNeoForge extends EntityTypeTagsProvider {
 
-    public DeepSeaEntityTypeTagProviderNeoForge(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+    public DeepSeaEntityTypeTagsProviderNeoForge(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
         super(output, lookupProvider, DeepSeaCommon.MOD_ID);
     }
 
