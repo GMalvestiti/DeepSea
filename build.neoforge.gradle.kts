@@ -15,7 +15,7 @@ configurations {
 }
 
 sourceSets.main {
-    resources.srcDir("generated/resources")
+    resources.srcDir("src/main/generated/resources")
     resources.srcDir("src/main/resources")
 }
 
