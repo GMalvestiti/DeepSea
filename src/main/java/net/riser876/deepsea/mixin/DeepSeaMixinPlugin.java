@@ -14,9 +14,13 @@ import static net.riser876.deepsea.config.ConfigManager.CONFIG;
 
 public class DeepSeaMixinPlugin implements IMixinConfigPlugin {
 
+    private String mixinPackage;
+
     @Override
     public void onLoad(String mixinPackage) {
         try {
+            this.mixinPackage = mixinPackage;
+
             ConfigManager.loadConfig();
             ConfigManager.validateConfig();
             DeepSeaCommon.info("Configuration loaded.");
@@ -27,9 +31,10 @@ public class DeepSeaMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if (mixinClassName.contains("net.riser876.deepsea")) {
+        if (Objects.nonNull(this.mixinPackage) && mixinClassName.startsWith(this.mixinPackage)) {
             if (Objects.isNull(CONFIG)) {
-                return false;
+                DeepSeaCommon.info("Configuration is null. Defaulting mixin application to TRUE.");
+                return true;
             }
             return CONFIG.ENABLED;
         }

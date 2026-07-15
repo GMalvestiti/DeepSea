@@ -2,17 +2,13 @@ plugins {
     id("idea")
     id("net.neoforged.moddev") version "2.0.141"
     id("neoforge-mutex")
-    id("com.gradleup.shadow") version "9.5.1"
+    kotlin("jvm") version "2.2.10"
+    id("com.google.devtools.ksp") version "2.2.10-2.0.2"
+    id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22"
 }
 
 version = "${property("mod.version")}+${sc.current.version}"
 base.archivesName = "${property("mod.id") as String}-neoforge"
-
-val shadowGroup: String = property("mod.group") as String
-
-configurations {
-    shadow
-}
 
 sourceSets.main {
     resources.srcDir("src/main/generated/resources")
@@ -31,9 +27,17 @@ repositories {
     strictMaven("https://api.modrinth.com/maven", "Modrinth", "maven.modrinth")
 }
 
+val caffeine: String = "com.github.ben-manes.caffeine:caffeine:${property("deps.caffeine")}"
+
 dependencies {
-    shadow("com.github.ben-manes.caffeine:caffeine:${property("deps.caffeine")}")
-    implementation("com.github.ben-manes.caffeine:caffeine:${property("deps.caffeine")}")
+    jarJar(caffeine)
+    implementation(caffeine)
+
+    if (sc.current.parsed < "1.21.9") {
+        configurations.findByName("additionalRuntimeClasspath")?.let { config ->
+            dependencies.add(config.name, caffeine)
+        }
+    }
 }
 
 neoForge {
@@ -54,6 +58,8 @@ neoForge {
         register("client") {
             gameDirectory = file("../../run/")
             client()
+            programArgument("--username=Riser876")
+            programArgument("--uuid=13957e2e-2731-4479-8a6d-d42f89f8d756")
             // List of namespaces to load gametests from. Empty = all namespaces.
             systemProperty("neoforge.enabledGameTestNamespaces", property("mod.id") as String)
         }
@@ -137,27 +143,13 @@ java {
     }
 }
 
+fletchingTable {
+    mixins.register("main") {
+        mixin("default", "${property("mod.id")}.mixins.json")
+    }
+}
+
 tasks {
-    jar {
-        enabled = false
-    }
-
-    assemble {
-        dependsOn(shadowJar)
-    }
-
-    shadowJar {
-        archiveClassifier.set("")
-
-        configurations = listOf(project.configurations.shadow.get())
-
-        relocate("com.github.benmanes.caffeine", "${shadowGroup}.shaded.caffeine")
-        relocate("com.google.errorprone", "${shadowGroup}.shaded.errorprone")
-        relocate("org.jspecify", "${shadowGroup}.shaded.jspecify")
-
-        mergeServiceFiles()
-    }
-
     processResources {
         fun MutableMap<String, String>.register(key: String, property: String) {
             val value: String = sc.properties[property]

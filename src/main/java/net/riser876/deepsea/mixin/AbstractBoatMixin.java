@@ -15,7 +15,6 @@ import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
 import net.minecraft.world.level.biome.Biome;
 import net.riser876.deepsea.record.ChunkBiomeKey;
 import net.riser876.deepsea.registry.DeepSeaTags;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,7 +29,7 @@ import static net.riser876.deepsea.config.ConfigManager.CONFIG;
 public class AbstractBoatMixin {
 
     @Unique
-    private static final Cache<@NotNull ChunkBiomeKey, Boolean> DEEP_SEA_CACHE =
+    private static final Cache<ChunkBiomeKey, Boolean> DEEP_SEA_CACHE =
         Caffeine.newBuilder()
             .maximumSize(CONFIG.CACHE.CACHE_SIZE)
             .expireAfterAccess(CONFIG.CACHE.CACHE_TIME, TimeUnit.MINUTES)
