@@ -21,8 +21,7 @@ sourceSets.main {
 
 repositories {
     /**
-     * Restricts dependency search of the given [groups] to the [maven URL][url],
-     * improving the setup speed.
+     * Restricts dependency search of the given [groups] to the [maven URL][url], improving the setup speed.
      */
     fun strictMaven(url: String, alias: String, vararg groups: String) = exclusiveContent {
         forRepository { maven(url) { name = alias } }
@@ -139,6 +138,14 @@ java {
 }
 
 tasks {
+    jar {
+        enabled = false
+    }
+
+    assemble {
+        dependsOn(shadowJar)
+    }
+
     shadowJar {
         archiveClassifier.set("")
 
@@ -147,6 +154,8 @@ tasks {
         relocate("com.github.benmanes.caffeine", "${shadowGroup}.shaded.caffeine")
         relocate("com.google.errorprone", "${shadowGroup}.shaded.errorprone")
         relocate("org.jspecify", "${shadowGroup}.shaded.jspecify")
+
+        mergeServiceFiles()
     }
 
     processResources {
@@ -186,7 +195,7 @@ tasks {
         group = "build"
         description = "Builds mod jars and copies results to `build/libs/{mod version}/`"
 
-        dependsOn(shadowJar)
+        dependsOn(build)
 
         inputs.property("version", project.property("mod.version"))
 

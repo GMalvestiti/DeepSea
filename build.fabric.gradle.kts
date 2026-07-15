@@ -48,7 +48,7 @@ loom {
     fabricModJsonPath = rootProject.file("src/main/resources/fabric.mod.json") // Useful for interface injection
     accessWidenerPath = sc.process(
         rootProject.file("src/main/resources/${property("mod.id")}.ct"),
-        "build/processed.ct"
+        "build/${property("mod.id")}.ct"
     )
 
     decompilerOptions.named("vineflower") {
@@ -89,8 +89,27 @@ java {
 }
 
 tasks {
+    if (sc.current.parsed < "26.1") {
+        named<net.fabricmc.loom.task.RemapJarTask>("remapJar") {
+            dependsOn(shadowJar)
+            inputFile.set(shadowJar.flatMap { it.archiveFile })
+        }
+    } else {
+        jar {
+            enabled = false
+        }
+
+        assemble {
+            dependsOn(shadowJar)
+        }
+    }
+
     shadowJar {
-        archiveClassifier.set("")
+        if (sc.current.parsed < "26.1") {
+            archiveClassifier.set("shaded")
+        } else {
+            archiveClassifier.set("")
+        }
 
         configurations = listOf(project.configurations.shadow.get())
 
@@ -134,6 +153,8 @@ tasks {
     register<Copy>("buildAndCollect") {
         group = "build"
         description = "Builds mod jars and copies results to `build/libs/{mod version}/`"
+
+        dependsOn(build)
 
         inputs.property("version", project.property("mod.version"))
 
