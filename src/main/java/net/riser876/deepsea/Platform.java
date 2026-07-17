@@ -2,16 +2,16 @@ package net.riser876.deepsea;
 
 import java.nio.file.Path;
 
-public sealed interface ModLoader {
+public sealed interface Platform {
 
-    ModLoader INSTANCE =
-        /*? if fabric{*/new FabricModLoader();
-        /*?} elif neoforge *///new NeoForgeModLoader();
+    Platform INSTANCE =
+        /*? if fabric{*/new FabricPlatform();
+        /*?} elif neoforge *///new NeoForgePlatform();
 
     Path getConfigDir();
 
     //? if fabric {
-    final class FabricModLoader implements ModLoader {
+    final class FabricPlatform implements Platform {
 
         private final net.fabricmc.loader.api.FabricLoader loader = net.fabricmc.loader.api.FabricLoader.getInstance();
 
@@ -21,7 +21,7 @@ public sealed interface ModLoader {
         }
     }
     //?} elif neoforge {
-    /*final class NeoForgeModLoader implements ModLoader {
+    /*final class NeoForgePlatform implements Platform {
 
         @Override
         public Path getConfigDir() {

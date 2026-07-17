@@ -1,6 +1,5 @@
 plugins {
-    id("idea")
-    // This plugin applies the correct loom variant based on the Minecraft version
+    id("build.common")
     id("dev.kikugie.loom-back-compat")
     id("com.gradleup.shadow") version "9.5.1"
 }
@@ -9,9 +8,9 @@ plugins {
 version = "${property("mod.version")}+${sc.current.version}"
 base.archivesName = "${property("mod.id") as String}-fabric"
 
-// This can be used for publishing on Modrinth and Curseforge
-val compatibleVersions: List<String> = sc.properties.rawOrNull("mod", "mc_releases")
-    ?.asList().orEmpty().map { it.toString() }
+sourceSets.main {
+    resources.exclude("**/.cache")
+}
 
 val shadowGroup: String = property("mod.group") as String
 
@@ -19,29 +18,15 @@ configurations {
     shadow
 }
 
-repositories {
-    /**
-     * Restricts dependency search of the given [groups] to the [maven URL][url], improving the setup speed.
-     */
-    fun strictMaven(url: String, alias: String, vararg groups: String) = exclusiveContent {
-        forRepository { maven(url) { name = alias } }
-        filter { groups.forEach(::includeGroup) }
-    }
-    strictMaven("https://www.cursemaven.com", "CurseForge", "curse.maven")
-    strictMaven("https://api.modrinth.com/maven", "Modrinth", "maven.modrinth")
-}
-
 dependencies {
     minecraft("com.mojang:minecraft:${sc.current.version}")
-    // Applies Mojang Mappings on obfuscated versions
     loomx.applyMojangMappings()
 
-    // Use `mod{dependency type}` even on 26.1+ - loom-back-compat converts them
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
 
-    shadow("com.github.ben-manes.caffeine:caffeine:${property("deps.caffeine")}")
     implementation("com.github.ben-manes.caffeine:caffeine:${property("deps.caffeine")}")
+    shadow("com.github.ben-manes.caffeine:caffeine:${property("deps.caffeine")}")
 }
 
 loom {
@@ -106,16 +91,16 @@ tasks {
 
     shadowJar {
         if (sc.current.parsed < "26.1") {
-            archiveClassifier.set("shaded")
+            archiveClassifier.set("shadow")
         } else {
             archiveClassifier.set("")
         }
 
         configurations = listOf(project.configurations.shadow.get())
 
-        relocate("com.github.benmanes.caffeine", "${shadowGroup}.shaded.caffeine")
-        relocate("com.google.errorprone", "${shadowGroup}.shaded.errorprone")
-        relocate("org.jspecify", "${shadowGroup}.shaded.jspecify")
+        relocate("com.github.benmanes.caffeine", "${shadowGroup}.shadow.caffeine")
+        relocate("com.google.errorprone", "${shadowGroup}.shadow.errorprone")
+        relocate("org.jspecify", "${shadowGroup}.shadow.jspecify")
 
         mergeServiceFiles()
     }
@@ -158,18 +143,10 @@ tasks {
 
         inputs.property("version", project.property("mod.version"))
 
-        // loomx.mod(Sources)Jar returns the jar task for the applied loom variant
         from(
             loomx.modJar.flatMap { it.archiveFile }
         )
 
         into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
-    }
-}
-
-idea {
-    module {
-        isDownloadSources = true
-        isDownloadJavadoc = true
     }
 }

@@ -15,7 +15,7 @@ plugins {
     id("dev.kikugie.stonecutter") version "0.9.6"
 
     // Used for cross-compat for 26.1+ and older versions (https://codeberg.org/KikuGie/loom-back-compat)
-    id("dev.kikugie.loom-back-compat") version "0.3"
+    id("dev.kikugie.loom-back-compat") version "0.4"
 
     // Sometimes it is needed to make Gradle run at all, so it doesn't hurt to have (https://github.com/gradle/foojay-toolchains)
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
@@ -38,47 +38,12 @@ stonecutter {
         }
 
         // See https://stonecutter.kikugie.dev/wiki/start/#choosing-minecraft-versions
-        match("1.21", "fabric", "neoforge")
-        match("1.21.2", "fabric", "neoforge")
+        match("1.21", "fabric")
+        match("1.21.2", "fabric")
         match("1.21.9", "fabric")
-        match("1.21.11", "fabric", "neoforge")
+        match("1.21.11", "fabric")
         match("26.1", "fabric", "neoforge")
         vcsVersion = "26.1-fabric"
-    }
-}
-
-// https://github.com/Bawnorton/Neruina/blob/stonecutter/settings.gradle.kts
-gradle.beforeProject {
-    val gitDir = rootDir.resolve(".git")
-    if (gitDir.exists() && gitDir.isDirectory) {
-        val hooksDir = gitDir.resolve("hooks")
-        val preCommitHook = hooksDir.resolve("pre-commit")
-
-        if (!preCommitHook.exists()) {
-            hooksDir.mkdirs()
-            preCommitHook.writeText(
-                """
-                #!/bin/bash
-                
-                vcs_version=$(ggrep -oP 'vcsVersion\s*=\s*"\K[^"]+' settings.gradle.kts)
-                active_version=$(ggrep -oP 'stonecutter\s+active\s+"\K[^"]+' stonecutter.gradle.kts)
-                
-                echo "Detected vcsVersion: ${'$'}vcs_version"
-                echo "Detected active version: ${'$'}active_version"
-                
-                if [ "${'$'}vcs_version" != "${'$'}active_version" ]; then
-                  echo "Please run './gradlew \"Reset active project\"' to set the stonecutter branch to the version control version."
-                  exit 1
-                else
-                  echo "Versions match. No action needed."
-                fi
-                """.trimIndent()
-            )
-            preCommitHook.setExecutable(true)
-            println("Git pre-commit hook installed.")
-        }
-    } else {
-        println("Not a Git repository. Skipping hook installation.")
     }
 }
 

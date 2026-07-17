@@ -1,62 +1,37 @@
 plugins {
-    id("idea")
-    id("net.neoforged.moddev") version "2.0.141"
+    id("build.common")
     id("neoforge-mutex")
-    kotlin("jvm") version "2.2.10"
-    id("com.google.devtools.ksp") version "2.2.10-2.0.2"
-    id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22"
+    id("net.neoforged.moddev") version "2.0.141"
 }
 
 version = "${property("mod.version")}+${sc.current.version}"
 base.archivesName = "${property("mod.id") as String}-neoforge"
 
 sourceSets.main {
-    resources.srcDir("src/main/generated/resources")
     resources.srcDir("src/main/resources")
+    resources.srcDir("src/main/generated")
+    resources.exclude("**/.cache")
 }
-
-repositories {
-    /**
-     * Restricts dependency search of the given [groups] to the [maven URL][url], improving the setup speed.
-     */
-    fun strictMaven(url: String, alias: String, vararg groups: String) = exclusiveContent {
-        forRepository { maven(url) { name = alias } }
-        filter { groups.forEach(::includeGroup) }
-    }
-    strictMaven("https://www.cursemaven.com", "CurseForge", "curse.maven")
-    strictMaven("https://api.modrinth.com/maven", "Modrinth", "maven.modrinth")
-}
-
-val caffeine: String = "com.github.ben-manes.caffeine:caffeine:${property("deps.caffeine")}"
 
 dependencies {
-    jarJar(caffeine)
-    implementation(caffeine)
-
-    if (sc.current.parsed < "1.21.9") {
-        configurations.findByName("additionalRuntimeClasspath")?.let { config ->
-            dependencies.add(config.name, caffeine)
+    jarJar(implementation("com.github.ben-manes.caffeine:caffeine") {
+        version {
+            prefer("${property("deps.caffeine")}")
         }
-    }
+    })
 }
 
 neoForge {
     version = property("deps.neoforge_loader") as String
 
     mods {
-        // Define mod <-> source bindings
-        // These are used to tell the game which sources are for which mod
-        // Multi mod projects should define one per mod
         register("${property("mod.id")}") {
             sourceSet(sourceSets.main.get())
         }
     }
 
-    // Default run configurations.
-    // These can be tweaked, removed, or duplicated as needed.
     runs {
         register("client") {
-            gameDirectory = file("../../run/")
             client()
             programArgument("--username=Riser876")
             programArgument("--uuid=13957e2e-2731-4479-8a6d-d42f89f8d756")
@@ -65,60 +40,30 @@ neoForge {
         }
 
         register("server") {
-            gameDirectory = file("../../run/")
             server()
             programArgument("--nogui")
             systemProperty("neoforge.enabledGameTestNamespaces", property("mod.id") as String)
         }
 
-        // This run config launches GameTestServer and runs all registered gametests, then exits.
-        // By default, the server will crash when no gametests are provided.
-        // The gametest system is also enabled by default for other run configs under the /test command.
         register("gameTestServer") {
             type = "gameTestServer"
             systemProperty("neoforge.enabledGameTestNamespaces", property("mod.id") as String)
         }
 
-        if (sc.current.parsed >= "1.21.4") {
-            register("clientData") {
-                clientData()
+        register("clientData") {
+            clientData()
 
-                gameDirectory = file("../../run")
-
-                programArguments.addAll(
-                    "--mod", property("mod.id") as String,
-                    "--all",
-                    "--output", file("src/main/generated/resources").absolutePath,
-                    "--existing", file("src/main/resources").absolutePath
-                )
-            }
-        } else {
-            register("data") {
-                data()
-
-                gameDirectory = file("../../run")
-
-                programArguments.addAll(
-                    "--mod", property("mod.id") as String,
-                    "--all",
-                    "--output", file("src/main/generated/resources").absolutePath,
-                    "--existing", file("src/main/resources").absolutePath
-                )
-            }
+            programArguments.addAll(
+                "--mod", property("mod.id") as String,
+                "--all",
+                "--output", file("src/main/generated").absolutePath,
+                "--existing", file("src/main/resources").absolutePath
+            )
         }
 
-        // Applies to all the run configs above
         configureEach {
-            // Recommended logging data for a userdev environment
-            // The markers can be added/remove as needed separated by commas.
-            // "SCAN": For mods scan.
-            // "REGISTRIES": For firing of registry events.
-            // "REGISTRYDUMP": For getting the contents of all registries.
+            gameDirectory = file("../../run/")
             systemProperty("forge.logging.markers", "REGISTRIES")
-
-            // Recommended logging level for the console
-            // You can set various levels here.
-            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             logLevel = org.slf4j.event.Level.DEBUG
         }
     }
@@ -143,13 +88,11 @@ java {
     }
 }
 
-fletchingTable {
-    mixins.register("main") {
-        mixin("default", "${property("mod.id")}.mixins.json")
-    }
-}
-
 tasks {
+    named("createMinecraftArtifacts") {
+        dependsOn("stonecutterGenerate")
+    }
+
     processResources {
         fun MutableMap<String, String>.register(key: String, property: String) {
             val value: String = sc.properties[property]
@@ -179,10 +122,6 @@ tasks {
         exclude("fabric.mod.json", "*.ct", "*.classtweaker")
     }
 
-    named("createMinecraftArtifacts") {
-        dependsOn("stonecutterGenerate")
-    }
-
     register<Copy>("buildAndCollect") {
         group = "build"
         description = "Builds mod jars and copies results to `build/libs/{mod version}/`"
@@ -196,12 +135,5 @@ tasks {
         )
 
         into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
-    }
-}
-
-idea {
-    module {
-        isDownloadSources = true
-        isDownloadJavadoc = true
     }
 }

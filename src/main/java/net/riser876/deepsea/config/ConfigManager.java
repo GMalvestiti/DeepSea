@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import net.riser876.deepsea.DeepSeaCommon;
-import net.riser876.deepsea.ModLoader;
+import net.riser876.deepsea.Platform;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,7 +19,7 @@ public class ConfigManager {
         .setPrettyPrinting()
         .create();
     private static final String CONFIG_FILE_NAME = DeepSeaCommon.MOD_ID + ".json";
-    public static Path CONFIG_PATH = ModLoader.INSTANCE.getConfigDir().resolve(CONFIG_FILE_NAME);
+    public static Path CONFIG_PATH = Platform.INSTANCE.getConfigDir().resolve(CONFIG_FILE_NAME);
 
     public static Config CONFIG;
 
