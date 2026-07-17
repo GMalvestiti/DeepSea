@@ -21,54 +21,6 @@ dependencies {
     })
 }
 
-neoForge {
-    version = property("deps.neoforge_loader") as String
-
-    mods {
-        register("${property("mod.id")}") {
-            sourceSet(sourceSets.main.get())
-        }
-    }
-
-    runs {
-        register("client") {
-            client()
-            programArgument("--username=Riser876")
-            programArgument("--uuid=13957e2e-2731-4479-8a6d-d42f89f8d756")
-            // List of namespaces to load gametests from. Empty = all namespaces.
-            systemProperty("neoforge.enabledGameTestNamespaces", property("mod.id") as String)
-        }
-
-        register("server") {
-            server()
-            programArgument("--nogui")
-            systemProperty("neoforge.enabledGameTestNamespaces", property("mod.id") as String)
-        }
-
-        register("gameTestServer") {
-            type = "gameTestServer"
-            systemProperty("neoforge.enabledGameTestNamespaces", property("mod.id") as String)
-        }
-
-        register("clientData") {
-            clientData()
-
-            programArguments.addAll(
-                "--mod", property("mod.id") as String,
-                "--all",
-                "--output", file("src/main/generated").absolutePath,
-                "--existing", file("src/main/resources").absolutePath
-            )
-        }
-
-        configureEach {
-            gameDirectory = file("../../run/")
-            systemProperty("forge.logging.markers", "REGISTRIES")
-            logLevel = org.slf4j.event.Level.DEBUG
-        }
-    }
-}
-
 val requiredJava = when {
     sc.current.parsed >= "26.1" -> JavaVersion.VERSION_25
     sc.current.parsed >= "1.20.5" -> JavaVersion.VERSION_21
@@ -88,9 +40,67 @@ java {
     }
 }
 
+neoForge {
+    version = property("deps.neoforge_loader") as String
+
+    mods {
+        register("${property("mod.id")}") {
+            sourceSet(sourceSets.main.get())
+        }
+    }
+
+    runs {
+        configureEach {
+            gameDirectory = file("../../run/")
+            systemProperty("forge.logging.markers", "REGISTRIES")
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+
+        register("client") {
+            client()
+            programArgument("--username=Riser876")
+            programArgument("--uuid=13957e2e-2731-4479-8a6d-d42f89f8d756")
+            systemProperty("neoforge.enabledGameTestNamespaces", property("mod.id") as String)
+        }
+
+        register("server") {
+            server()
+            programArgument("--nogui")
+            systemProperty("neoforge.enabledGameTestNamespaces", property("mod.id") as String)
+        }
+
+        register("clientData") {
+            clientData()
+
+            programArguments.addAll(
+                "--mod", property("mod.id") as String,
+                "--all",
+                "--output", file("src/main/generated").absolutePath,
+                "--existing", file("src/main/resources").absolutePath
+            )
+        }
+
+        register("gameTestServer") {
+            type = "gameTestServer"
+            systemProperty("neoforge.enabledGameTestNamespaces", property("mod.id") as String)
+        }
+    }
+}
+
 tasks {
-    named("createMinecraftArtifacts") {
-        dependsOn("stonecutterGenerate")
+    register<Copy>("buildAndCollect") {
+        group = "build"
+        description = "Builds mod jars and copies results to `build/libs/{mod version}/`"
+
+        dependsOn(build)
+
+        inputs.property("version", project.property("mod.version"))
+
+        from(
+            jar.flatMap { it.archiveFile }
+        )
+
+        into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
     }
 
     processResources {
@@ -122,18 +132,7 @@ tasks {
         exclude("fabric.mod.json", "*.ct", "*.classtweaker")
     }
 
-    register<Copy>("buildAndCollect") {
-        group = "build"
-        description = "Builds mod jars and copies results to `build/libs/{mod version}/`"
-
-        dependsOn(build)
-
-        inputs.property("version", project.property("mod.version"))
-
-        from(
-            jar.flatMap { it.archiveFile }
-        )
-
-        into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
+    named("createMinecraftArtifacts") {
+        dependsOn("stonecutterGenerate")
     }
 }

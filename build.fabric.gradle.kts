@@ -29,31 +29,6 @@ dependencies {
     shadow("com.github.ben-manes.caffeine:caffeine:${property("deps.caffeine")}")
 }
 
-loom {
-    fabricModJsonPath = rootProject.file("src/main/resources/fabric.mod.json") // Useful for interface injection
-    accessWidenerPath = sc.process(
-        rootProject.file("src/main/resources/${property("mod.id")}.ct"),
-        "build/${property("mod.id")}.ct"
-    )
-
-    decompilerOptions.named("vineflower") {
-        options.put("mark-corresponding-synthetics", "1") // Adds names to lambdas - useful for mixins
-    }
-
-    runConfigs.all {
-        preferGradleTask = true
-        generateRunConfig = true
-        runDirectory = rootProject.file("run") // Shares the run directory between versions
-        jvmArguments.add("-Dmixin.debug.export=true") // Exports transformed classes for debugging
-    }
-}
-
-fabricApi {
-    configureDataGeneration {
-        client = true
-    }
-}
-
 val requiredJava: JavaVersion = when {
     sc.current.parsed >= "26.1" -> JavaVersion.VERSION_25
     sc.current.parsed >= "1.20.5" -> JavaVersion.VERSION_21
@@ -73,29 +48,71 @@ java {
     }
 }
 
+loom {
+    fabricModJsonPath = rootProject.file("src/main/resources/fabric.mod.json") // Useful for interface injection
+    accessWidenerPath = sc.process(
+        rootProject.file("src/main/resources/${property("mod.id")}.ct"),
+        "build/${property("mod.id")}.ct"
+    )
+
+    decompilerOptions.named("vineflower") {
+        options.put("mark-corresponding-synthetics", "1") // Adds names to lambdas - useful for mixins
+    }
+
+    runConfigs.all {
+        preferGradleTask = true
+        generateRunConfig = true
+        runDirectory = rootProject.file("run") // Shares the run directory between versions
+        jvmArguments.add("-Dmixin.debug.export=true") // Exports transformed classes for debugging
+    }
+
+    runConfigs["client"].apply {
+        programArguments.addAll(listOf("--username=Riser876", "--uuid=13957e2e-2731-4479-8a6d-d42f89f8d756"))
+    }
+}
+
+fabricApi {
+    configureDataGeneration {
+        client = true
+    }
+}
+
 tasks {
+    register<Copy>("buildAndCollect") {
+        group = "build"
+        description = "Builds mod jars and copies results to `build/libs/{mod version}/`"
+
+        dependsOn(build)
+
+        inputs.property("version", project.property("mod.version"))
+
+        from(
+            loomx.modJar.flatMap { it.archiveFile }
+        )
+
+        into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
+    }
+
     if (sc.current.parsed < "26.1") {
         named<net.fabricmc.loom.task.RemapJarTask>("remapJar") {
             dependsOn(shadowJar)
             inputFile.set(shadowJar.flatMap { it.archiveFile })
         }
     } else {
-        jar {
-            enabled = false
-        }
-
         assemble {
             dependsOn(shadowJar)
+        }
+
+        shadowJar {
+            archiveClassifier.set("")
+        }
+
+        jar {
+            enabled = false
         }
     }
 
     shadowJar {
-        if (sc.current.parsed < "26.1") {
-            archiveClassifier.set("shadow")
-        } else {
-            archiveClassifier.set("")
-        }
-
         configurations = listOf(project.configurations.shadow.get())
 
         relocate("com.github.benmanes.caffeine", "${shadowGroup}.shadow.caffeine")
@@ -133,20 +150,5 @@ tasks {
         filesMatching("*.mixins.json") { expand("java" to mixinJava) }
 
         exclude("META-INF/neoforge.mods.toml")
-    }
-
-    register<Copy>("buildAndCollect") {
-        group = "build"
-        description = "Builds mod jars and copies results to `build/libs/{mod version}/`"
-
-        dependsOn(build)
-
-        inputs.property("version", project.property("mod.version"))
-
-        from(
-            loomx.modJar.flatMap { it.archiveFile }
-        )
-
-        into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
     }
 }
