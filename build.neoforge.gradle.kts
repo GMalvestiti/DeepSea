@@ -69,6 +69,11 @@ neoForge {
             systemProperty("neoforge.enabledGameTestNamespaces", property("mod.id") as String)
         }
 
+        register("gameTestServer") {
+            type = "gameTestServer"
+            systemProperty("neoforge.enabledGameTestNamespaces", property("mod.id") as String)
+        }
+
         register("clientData") {
             clientData()
 
@@ -78,11 +83,6 @@ neoForge {
                 "--output", file("src/main/generated").absolutePath,
                 "--existing", file("src/main/resources").absolutePath
             )
-        }
-
-        register("gameTestServer") {
-            type = "gameTestServer"
-            systemProperty("neoforge.enabledGameTestNamespaces", property("mod.id") as String)
         }
     }
 }
@@ -128,6 +128,8 @@ tasks {
 
         val mixinJava = "JAVA_${requiredJava.majorVersion}"
         filesMatching("*.mixins.json") { expand("java" to mixinJava) }
+
+        from(rootProject.file("LICENSE")) { into("") }
 
         exclude("fabric.mod.json", "*.ct", "*.classtweaker")
     }

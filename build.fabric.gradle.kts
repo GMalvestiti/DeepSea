@@ -67,7 +67,8 @@ loom {
     }
 
     runConfigs["client"].apply {
-        programArguments.addAll(listOf("--username=Riser876", "--uuid=13957e2e-2731-4479-8a6d-d42f89f8d756"))
+        programArguments.add("--username=Riser876")
+        programArguments.add("--uuid=13957e2e-2731-4479-8a6d-d42f89f8d756")
     }
 }
 
@@ -106,13 +107,11 @@ tasks {
         shadowJar {
             archiveClassifier.set("")
         }
-
-        jar {
-            enabled = false
-        }
     }
 
     shadowJar {
+        dependsOn(jar)
+
         configurations = listOf(project.configurations.shadow.get())
 
         relocate("com.github.benmanes.caffeine", "${shadowGroup}.shadow.caffeine")
@@ -120,6 +119,9 @@ tasks {
         relocate("org.jspecify", "${shadowGroup}.shadow.jspecify")
 
         mergeServiceFiles()
+        addMultiReleaseAttribute.set(false)
+
+        exclude("META-INF/LICENSE", "META-INF/maven/**", "META-INF/versions/**/OSGI-INF/**")
     }
 
     processResources {
@@ -148,6 +150,8 @@ tasks {
 
         val mixinJava = "JAVA_${requiredJava.majorVersion}"
         filesMatching("*.mixins.json") { expand("java" to mixinJava) }
+
+        from(rootProject.file("LICENSE")) { into("") }
 
         exclude("META-INF/neoforge.mods.toml")
     }
