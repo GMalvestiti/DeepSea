@@ -13,14 +13,6 @@ sourceSets.main {
     resources.exclude("**/.cache")
 }
 
-dependencies {
-    jarJar(implementation("com.github.ben-manes.caffeine:caffeine") {
-        version {
-            prefer("${property("deps.caffeine")}")
-        }
-    })
-}
-
 val requiredJava = when {
     sc.current.parsed >= "26.1" -> JavaVersion.VERSION_25
     sc.current.parsed >= "1.20.5" -> JavaVersion.VERSION_21
@@ -74,8 +66,12 @@ neoForge {
             systemProperty("neoforge.enabledGameTestNamespaces", property("mod.id") as String)
         }
 
-        register("clientData") {
-            clientData()
+        register("data") {
+            if (sc.current.parsed < "1.21.4") {
+                data()
+            } else {
+                clientData()
+            }
 
             programArguments.addAll(
                 "--mod", property("mod.id") as String,
@@ -84,6 +80,17 @@ neoForge {
                 "--existing", file("src/main/resources").absolutePath
             )
         }
+    }
+}
+
+dependencies {
+    jarJar(implementation("com.github.ben-manes.caffeine:caffeine") {
+        version {
+            prefer("${property("deps.caffeine")}")
+        }
+    })
+    if (sc.current.parsed < "1.21.9") {
+        "additionalRuntimeClasspath"("com.github.ben-manes.caffeine:caffeine:${property("deps.caffeine")}")
     }
 }
 

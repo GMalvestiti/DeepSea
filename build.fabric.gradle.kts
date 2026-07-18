@@ -18,17 +18,6 @@ configurations {
     shadow
 }
 
-dependencies {
-    minecraft("com.mojang:minecraft:${sc.current.version}")
-    loomx.applyMojangMappings()
-
-    modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
-
-    implementation("com.github.ben-manes.caffeine:caffeine:${property("deps.caffeine")}")
-    shadow("com.github.ben-manes.caffeine:caffeine:${property("deps.caffeine")}")
-}
-
 val requiredJava: JavaVersion = when {
     sc.current.parsed >= "26.1" -> JavaVersion.VERSION_25
     sc.current.parsed >= "1.20.5" -> JavaVersion.VERSION_21
@@ -76,6 +65,17 @@ fabricApi {
     configureDataGeneration {
         client = true
     }
+}
+
+dependencies {
+    minecraft("com.mojang:minecraft:${sc.current.version}")
+    loomx.applyMojangMappings()
+
+    modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
+
+    implementation("com.github.ben-manes.caffeine:caffeine:${property("deps.caffeine")}")
+    shadow("com.github.ben-manes.caffeine:caffeine:${property("deps.caffeine")}")
 }
 
 tasks {
