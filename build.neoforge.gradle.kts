@@ -1,6 +1,6 @@
 plugins {
     id("build.common")
-    id("neoforge-mutex")
+    id("neoforge.mutex")
     id("net.neoforged.moddev") version "2.0.141"
 }
 
