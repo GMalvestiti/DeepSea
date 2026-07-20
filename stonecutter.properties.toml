@@ -59,7 +59,7 @@ mod.mc_compat = "1.21.11"
 deps.fabric_api = "0.141.4+1.21.11"
 
 [neoforge."1.21.11"]
-mod.mc_compat = "1.21.11"
+mod.mc_compat = "[1.21.11,26.1)"
 deps.neoforge_loader = "21.11.42"
 
 
