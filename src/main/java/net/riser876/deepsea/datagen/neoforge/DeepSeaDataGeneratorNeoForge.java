@@ -6,7 +6,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-//? if <1.21.11 {
+//? if <1.21.4 {
 /^import net.neoforged.neoforge.common.data.ExistingFileHelper;
 ^///?}
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -17,13 +17,13 @@ import net.riser876.deepsea.datagen.neoforge.provider.DeepSeaEntityTypeTagProvid
 
 import java.util.concurrent.CompletableFuture;
 
-//? if <1.21.11 {
-/^@EventBusSubscriber(modid = DeepSeaCommon.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
-^///?} else
+//? if <1.21.4 {
+//@EventBusSubscriber(modid = DeepSeaCommon.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+//?} else
 @EventBusSubscriber(modid = DeepSeaCommon.MOD_ID)
 public class DeepSeaDataGeneratorNeoForge {
 
-    //? if <1.21.11 {
+    //? if <1.21.4 {
     /^@SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();

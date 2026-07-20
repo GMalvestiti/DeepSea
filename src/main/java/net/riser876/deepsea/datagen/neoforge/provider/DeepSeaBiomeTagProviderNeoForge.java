@@ -5,7 +5,7 @@ package net.riser876.deepsea.datagen.neoforge.provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.BiomeTagsProvider;
 import net.minecraft.tags.BiomeTags;
-//? if <1.21.11 {
+//? if <1.21.4 {
 /^import net.neoforged.neoforge.common.data.ExistingFileHelper;
 ^///?}
 import net.riser876.deepsea.DeepSeaCommon;
@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class DeepSeaBiomeTagProviderNeoForge extends BiomeTagsProvider {
 
-    //? if <1.21.11 {
+    //? if <1.21.4 {
     /^public DeepSeaBiomeTagProviderNeoForge(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, DeepSeaCommon.MOD_ID, existingFileHelper);
     }

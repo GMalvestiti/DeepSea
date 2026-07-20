@@ -5,7 +5,7 @@ package net.riser876.deepsea.datagen.neoforge.provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
 import net.neoforged.neoforge.common.Tags;
-//? if <1.21.11 {
+//? if <1.21.4 {
 /^import net.neoforged.neoforge.common.data.ExistingFileHelper;
 ^///?}
 import net.riser876.deepsea.DeepSeaCommon;
@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class DeepSeaEntityTypeTagProviderNeoForge extends EntityTypeTagsProvider {
 
-    //? if <1.21.11 {
+    //? if <1.21.4 {
     /^public DeepSeaEntityTypeTagProviderNeoForge(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, DeepSeaCommon.MOD_ID, existingFileHelper);
     }
